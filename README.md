@@ -1,6 +1,5 @@
 # _20pro
-
-A new Flutter project.
+ 20Pro app, supporting functions of 20pro backoffice
 
 ## Getting Started
 

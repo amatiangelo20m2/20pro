@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "54799761759",
+    "project_id": "pro-11ac5",
+    "storage_bucket": "pro-11ac5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54799761759:android:9c6d819633a8cd075276ea",
+        "android_client_info": {
+          "package_name": "com.ventipro.app.u_20pro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-1wAjgeKjBrCHF8-39ulBf4QeZwj0y-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
