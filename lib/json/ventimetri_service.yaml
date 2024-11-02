@@ -1,0 +1,2710 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:59493/ventimetriservice",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/updatebranchdata": {
+      "put": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "updateBranchData",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchCreationEntity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/update/employeerole": {
+      "put": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "updateEmployeeRole",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/supplier/storenewbranchexclusionlisttotupplier": {
+      "put": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "storeNewBranchExclusionListToSupplier",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/storenewbranchListNotAllowedToSeeProduct": {
+      "put": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "storeNewBranchListNotAllowedToSeeProduct",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/product/update": {
+      "put": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "updateProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/editsupplier": {
+      "put": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "editSupplier",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupplierDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/update/stock/{storageId}/{userName}/{branchCode}": {
+      "put": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "updateStock",
+        "parameters": [
+          {
+            "name": "storageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorageDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/putdata": {
+      "put": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "putData",
+        "parameters": [
+          {
+            "name": "inventarioId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "insertedAmount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "deletedAmount",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventarioDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/insert/inventariodata": {
+      "put": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "insertDataIntoInventario",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionInventoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorageDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/updatetoprontoapartire": {
+      "put": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "updateOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderItemDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/updatetoconsegnato": {
+      "put": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "updateOrderToDelivered",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderItemDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/updatetoarchiviato": {
+      "put": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "updateOrderToArchived",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OrderItemDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/updatestatus": {
+      "put": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "updateOrderStatus",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "orderStatus",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BOZZA",
+                "INVIATO",
+                "IN_LAVORAZIONE",
+                "PRONTO_A_PARTIRE",
+                "DA_CONFERMARE",
+                "CONSEGNATO",
+                "ARCHIVIATO",
+                "CANCELLATO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/editorder/{orderId}": {
+      "put": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "editOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/linkusertobranch": {
+      "put": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "linkUserToBranch",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCodes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AMMINISTRATORE",
+                "RESPONSABILE",
+                "FACTOTUM",
+                "RESPONSABILE_MAGAZZINO",
+                "BARMAN",
+                "CUOCO",
+                "CAMERIERE"
+              ]
+            }
+          },
+          {
+            "name": "fcmToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VentiMetriQuadriData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/confirmemployee": {
+      "put": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "confirmEmployee",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "adminUserCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/branch/removefromuserlist": {
+      "put": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "removeUserFromBranch",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/product/insertlist": {
+      "post": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "insertProductList",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/product/add": {
+      "post": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "insertProduct",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/addlist": {
+      "post": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "insertSupplierList",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SupplierDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupplierDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/add": {
+      "post": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "addSupplier",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupplierDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/insertsupplierproducts": {
+      "post": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "insertProductsFromSupplierList",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventarioDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/create": {
+      "post": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "addStorage",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StorageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorageDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/addproduct": {
+      "post": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "addProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "storageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventarioDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/setfmctoken": {
+      "post": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "setFcmToken",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fcmToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/order/create": {
+      "post": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "createOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrderEntity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/branch/save": {
+      "post": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchCreationEntity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchResponseEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/retrieveSuppliers": {
+      "get": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "retrieveAllSupplier",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupplierDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/retrieve/bybranchcode": {
+      "get": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "retrieveStoragesByBranchCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StorageDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrieveemployeebyusercode": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "getEmployeeByUserCode",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeEntity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrieveemployeebybranchcode": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "getEmployeeByBranchCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeEntity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrievedata": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "retrieveData",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fcmToken",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VentiMetriQuadriData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrievebranchcounters/{branchCode}": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "retrieveBranchCounters",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CounterEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrievebranchbyusercodeandbranchcode": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "retrieveBranchByUserCodeAndBranchCode",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchResponseEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/retrieveall": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "retrieveAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/VentiMetriQuadriData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/retrievesingleproddetailsforbranchordersandrangedate": {
+      "get": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "retrieveSingleProductDetailsForRangeDateOrders",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/OrderItemDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/retrieveexceldatafromarchiviedorders": {
+      "get": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "retrieveExcelDataFromArchiviedOrders",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResultRecap"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/retrievearchivedorders": {
+      "get": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "getOrderArchivedByBrancCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/retrieve": {
+      "get": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "getOrderByBrancCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/branchdatabybranchtype": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "getBranchDataByBranchType",
+        "parameters": [
+          {
+            "name": "branchType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RISTORANTE",
+                "FORNITORE",
+                "CATERING"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BranchResponseEntity"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/branchdatabybranchcodeanduser": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "getBranchDataByBranchCodeAndUserCode",
+        "parameters": [
+          {
+            "name": "userCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchResponseEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/branchdatabybranchcode": {
+      "get": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "getBranchDataByBranchCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchResponseEntity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supplier/delete": {
+      "delete": {
+        "tags": [
+          "supplier-controller"
+        ],
+        "operationId": "removeSupplier",
+        "parameters": [
+          {
+            "name": "supplierId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/storage/delete/product": {
+      "delete": {
+        "tags": [
+          "storage-controller"
+        ],
+        "operationId": "removeProductFromStorage",
+        "parameters": [
+          {
+            "name": "inventarioId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/order/deleteorderitem": {
+      "delete": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "deleteOrderItemFromOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productIdList",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/order/deleteorder": {
+      "delete": {
+        "tags": [
+          "order-controller"
+        ],
+        "operationId": "deleteOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/branch/delete": {
+      "delete": {
+        "tags": [
+          "branch-controller"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BranchCreationEntity": {
+        "type": "object",
+        "properties": {
+          "branchCode": {
+            "type": "string"
+          },
+          "userCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "cap": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "vat": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "RISTORANTE",
+              "FORNITORE",
+              "CATERING"
+            ]
+          },
+          "logoImage": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "fcmToken": {
+            "type": "string"
+          }
+        }
+      },
+      "ProductDTO": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "productCode": {
+            "type": "string"
+          },
+          "unitMeasure": {
+            "type": "string",
+            "enum": [
+              "KG",
+              "PEZZI",
+              "LITRI",
+              "PACCHI",
+              "BARATTOLIPICCOLI",
+              "CARTONI",
+              "CARTONE6",
+              "CARTONE12",
+              "CARTONE24",
+              "CARTONE50",
+              "BOTTIGLIA",
+              "BARATTOLI",
+              "FARDELLO",
+              "CT",
+              "BOTTIGLIETTA",
+              "UNITA",
+              "SECCHIO",
+              "ALTRO",
+              "COLLO"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "vatApplied": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "ALIMENTI",
+              "BEVANDE",
+              "CARTOPLASTICA",
+              "ALTRO"
+            ]
+          },
+          "sku": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "branchListNotAllowedToSeeThisProduct": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SupplierDTO": {
+        "type": "object",
+        "properties": {
+          "supplierId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "vatNumber": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "cap": {
+            "type": "string"
+          },
+          "cf": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "pec": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "productDTOList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDTO"
+            }
+          },
+          "createdByUserCode": {
+            "type": "string"
+          },
+          "branchNotAllowed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "InventarioDTO": {
+        "type": "object",
+        "properties": {
+          "inventarioId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "insertionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deletionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "productDTO": {
+            "$ref": "#/components/schemas/ProductDTO"
+          },
+          "inventoryAction": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryAction"
+            }
+          },
+          "stock": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "InventoryAction": {
+        "type": "object",
+        "properties": {
+          "insertionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "operationType": {
+            "type": "string",
+            "enum": [
+              "CREATION",
+              "INSERTION",
+              "REMOVAL"
+            ]
+          },
+          "modifiedByUser": {
+            "type": "string"
+          }
+        }
+      },
+      "StorageDTO": {
+        "type": "object",
+        "properties": {
+          "storageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "cap": {
+            "type": "string"
+          },
+          "creationTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inventarioDTOS": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventarioDTO"
+            }
+          }
+        }
+      },
+      "TransactionInventoryRequest": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "storageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "transactionItemList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionItem"
+            }
+          },
+          "operationType": {
+            "type": "string",
+            "enum": [
+              "CREATION",
+              "INSERTION",
+              "REMOVAL"
+            ]
+          }
+        }
+      },
+      "TransactionItem": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "OrderItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "receivedQuantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "sentQuantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "unitMeasure": {
+            "type": "string",
+            "enum": [
+              "KG",
+              "PEZZI",
+              "LITRI",
+              "PACCHI",
+              "BARATTOLIPICCOLI",
+              "CARTONI",
+              "CARTONE6",
+              "CARTONE12",
+              "CARTONE24",
+              "CARTONE50",
+              "BOTTIGLIA",
+              "BARATTOLI",
+              "FARDELLO",
+              "CT",
+              "BOTTIGLIETTA",
+              "UNITA",
+              "SECCHIO",
+              "ALTRO",
+              "COLLO"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "vat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doneBySupplier": {
+            "type": "boolean"
+          },
+          "received": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nano": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrderDTO": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdByUser": {
+            "type": "string"
+          },
+          "userCode": {
+            "type": "string"
+          },
+          "createdBranchCode": {
+            "type": "string"
+          },
+          "createdBranchName": {
+            "type": "string"
+          },
+          "insertedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "incomingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "preferredReceivingTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "orderStatus": {
+            "type": "string",
+            "enum": [
+              "BOZZA",
+              "INVIATO",
+              "IN_LAVORAZIONE",
+              "PRONTO_A_PARTIRE",
+              "DA_CONFERMARE",
+              "CONSEGNATO",
+              "ARCHIVIATO",
+              "CANCELLATO"
+            ]
+          },
+          "orderTarget": {
+            "type": "string",
+            "enum": [
+              "SUPPLIER",
+              "BRANCH"
+            ]
+          },
+          "codeTarget": {
+            "type": "string"
+          },
+          "nameTarget": {
+            "type": "string"
+          },
+          "orderItemDtoList": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDto"
+            }
+          }
+        }
+      },
+      "BranchResponseEntity": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "vat": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "RISTORANTE",
+              "FORNITORE",
+              "CATERING"
+            ]
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "AMMINISTRATORE",
+              "RESPONSABILE",
+              "FACTOTUM",
+              "RESPONSABILE_MAGAZZINO",
+              "BARMAN",
+              "CUOCO",
+              "CAMERIERE"
+            ]
+          },
+          "logoImage": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "authorized": {
+            "type": "boolean"
+          },
+          "supplierDTOList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierDTO"
+            }
+          },
+          "storageDTOS": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StorageDTO"
+            }
+          }
+        }
+      },
+      "VentiMetriQuadriData": {
+        "type": "object",
+        "properties": {
+          "branches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BranchResponseEntity"
+            }
+          }
+        }
+      },
+      "CreateOrderEntity": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "userCode": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "insertedDate": {
+            "type": "string"
+          },
+          "incomingDate": {
+            "type": "string"
+          },
+          "preferredReceivingHour": {
+            "type": "string"
+          },
+          "orderTarget": {
+            "type": "string",
+            "enum": [
+              "SUPPLIER",
+              "BRANCH"
+            ]
+          },
+          "branchCodeTarget": {
+            "type": "string"
+          },
+          "supplierCodeTarget": {
+            "type": "string"
+          },
+          "orderItemAmountMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "thisOrderAlreadyInConsegnatoStatus": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EmployeeEntity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ONLINE",
+              "AWAY",
+              "BUSY",
+              "INVISIBLE"
+            ]
+          },
+          "userCode": {
+            "type": "string"
+          },
+          "fcmToken": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "branchName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "AMMINISTRATORE",
+              "RESPONSABILE",
+              "FACTOTUM",
+              "RESPONSABILE_MAGAZZINO",
+              "BARMAN",
+              "CUOCO",
+              "CAMERIERE"
+            ]
+          },
+          "authorized": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CounterEntity": {
+        "type": "object",
+        "properties": {
+          "ordersCounter": {
+            "$ref": "#/components/schemas/OrdersCounter"
+          },
+          "reservationCounter": {
+            "$ref": "#/components/schemas/ReservationCounter"
+          },
+          "inventarioItemsIntoCurrentStorage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrdersCounter": {
+        "type": "object",
+        "properties": {
+          "ordersInLavorazione": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderDaConfermare": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordersInviato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordersConsegnato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordersProntoAPartire": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ReservationCounter": {
+        "type": "object",
+        "properties": {
+          "reservationToday": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DetailedProductRecap": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "excelDataArchivedOrderList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExcelDataArchivedOrder"
+            }
+          }
+        }
+      },
+      "ExcelDataArchivedOrder": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "receivedQuantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "sentQuantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "unitMeasure": {
+            "type": "string",
+            "enum": [
+              "KG",
+              "PEZZI",
+              "LITRI",
+              "PACCHI",
+              "BARATTOLIPICCOLI",
+              "CARTONI",
+              "CARTONE6",
+              "CARTONE12",
+              "CARTONE24",
+              "CARTONE50",
+              "BOTTIGLIA",
+              "BARATTOLI",
+              "FARDELLO",
+              "CT",
+              "BOTTIGLIETTA",
+              "UNITA",
+              "SECCHIO",
+              "ALTRO",
+              "COLLO"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "vatPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "vat": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrderResultRecap": {
+        "type": "object",
+        "properties": {
+          "incomingsOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailedProductRecap"
+            }
+          },
+          "outgoingOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DetailedProductRecap"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,671 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:50084/restaurantservice",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/restaurant/hideemployee/{employeeId}": {
+      "put": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "hideEmployee",
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/restaurant/employee/update/{branchCode}": {
+      "put": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "updateEmployee",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/restaurant/retrieveconfiguration/{branchCode}": {
+      "post": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "retrieveConfiguration",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestaurantDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/employee/create/{branchCode}": {
+      "post": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "createEmployee",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmployeeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/create/reports": {
+      "post": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "createReports",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EmployeePresenceReportDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeePresenceReportDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/retrievereports/{branchCode}": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "retrieveReports",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "initialRangeDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endRangeDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeReportSummaryDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/retrievereport/{branchCode}": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "getReportsByBranchCodeAndDate",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "zonedDateTime",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeePresenceReportDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/getreport/{id}": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "getReportById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeePresenceReportDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/getemployeebybranchcode/{branchCode}": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "getEmployeeListByBranchCode",
+        "parameters": [
+          {
+            "name": "branchCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/getemployee/{id}": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "getEmployeeById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/employee/getall": {
+      "get": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "getAllEmployees",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/restaurant/report/{id}": {
+      "delete": {
+        "tags": [
+          "restaurant-controller"
+        ],
+        "operationId": "deleteReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EmployeeDTO": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "UOMO",
+              "DONNA"
+            ]
+          },
+          "jobDescription": {
+            "type": "string",
+            "enum": [
+              "AMMINISTRATORE",
+              "ADDETTA_AL_MARKETING",
+              "ADDETTO_ALL_ACCOGLIENZA_CLIENTI",
+              "AIUTO_BARMAN",
+              "AIUTO_CUOCO",
+              "ADD_ALLA_CUCINA",
+              "AIUTO_CAMERIERE",
+              "BARMAN",
+              "CAMERIERE_DI_BAR",
+              "CAMERIERE",
+              "CUOCO",
+              "CUOCO_DI_RISTORANTE",
+              "COORDINATRICE_DI_SALA",
+              "COMMIS_DI_CUCINA",
+              "DIRETTRICE_SALA_DEHORS",
+              "FOOD_AND_BEVERAGE_MANAGER",
+              "LAVAPIATTI",
+              "PASTICCIERE",
+              "PIZZAIOLO",
+              "RESPONSABILE_DI_SALA",
+              "TECNICI_WEB"
+            ]
+          },
+          "dob": {
+            "type": "string",
+            "format": "date"
+          },
+          "startDateInduction": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDateInduction": {
+            "type": "string",
+            "format": "date"
+          },
+          "retribution": {
+            "type": "number",
+            "format": "double"
+          },
+          "contractType": {
+            "type": "string",
+            "enum": [
+              "DETERMINATO",
+              "INDETERMINATO"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "remunerationType": {
+            "type": "string",
+            "enum": [
+              "GIORNALIERA",
+              "MENSILE",
+              "ORARIA"
+            ]
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "fired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RestaurantDTO": {
+        "type": "object",
+        "properties": {
+          "branchCode": {
+            "type": "string"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EmployeePresenceReportDTO": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "employee": {
+            "$ref": "#/components/schemas/EmployeeDTO"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "workedHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string"
+          },
+          "presentAtDinner": {
+            "type": "boolean"
+          },
+          "holiday": {
+            "type": "boolean"
+          },
+          "presentAtLunch": {
+            "type": "boolean"
+          },
+          "illness": {
+            "type": "boolean"
+          },
+          "rest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EmployeeReportSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "UOMO",
+              "DONNA"
+            ]
+          },
+          "jobDescription": {
+            "type": "string",
+            "enum": [
+              "AMMINISTRATORE",
+              "ADDETTA_AL_MARKETING",
+              "ADDETTO_ALL_ACCOGLIENZA_CLIENTI",
+              "AIUTO_BARMAN",
+              "AIUTO_CUOCO",
+              "ADD_ALLA_CUCINA",
+              "AIUTO_CAMERIERE",
+              "BARMAN",
+              "CAMERIERE_DI_BAR",
+              "CAMERIERE",
+              "CUOCO",
+              "CUOCO_DI_RISTORANTE",
+              "COORDINATRICE_DI_SALA",
+              "COMMIS_DI_CUCINA",
+              "DIRETTRICE_SALA_DEHORS",
+              "FOOD_AND_BEVERAGE_MANAGER",
+              "LAVAPIATTI",
+              "PASTICCIERE",
+              "PIZZAIOLO",
+              "RESPONSABILE_DI_SALA",
+              "TECNICI_WEB"
+            ]
+          },
+          "dob": {
+            "type": "string",
+            "format": "date"
+          },
+          "startDateInduction": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDateInduction": {
+            "type": "string",
+            "format": "date"
+          },
+          "contractType": {
+            "type": "string",
+            "enum": [
+              "DETERMINATO",
+              "INDETERMINATO"
+            ]
+          },
+          "phone": {
+            "type": "string"
+          },
+          "totalWorkedHours": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lunchCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dinnerCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalHolidays": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalIllnessDays": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalRestDays": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "fired": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
