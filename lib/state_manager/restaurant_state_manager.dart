@@ -19,7 +19,7 @@ class RestaurantStateManager extends ChangeNotifier {
   EmployeeDTO? get currentEmployee => _currentEmployee; // Getter for the current employee
 
   Future<void> _initializeClient() async {
-    print('Initialize client with ' + customBasePathRestaurant + '. Each call will be redirect to this url.');
+    print('Initialize client with $customBasePathRestaurant. Each call will be redirect to this url.');
 
     _restaurantClient = ApiClient(basePath: customBasePathRestaurant);
     _restaurantControllerApi = RestaurantControllerApi(_restaurantClient);

@@ -9,7 +9,6 @@ import 'package:http/src/response.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/app/core/main_screen.dart';
-import 'package:ventipro/app/core/restaurant/booking.dart';
 import '../../global/style.dart';
 import '../../state_manager/restaurant_state_manager.dart';
 
@@ -92,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset('assets/images/logo.png', width: 80),
+                          Image.asset('assets/images/logo.png', width: 60),
                           const SizedBox(height: 16),
                           CupertinoTextField(
                             clearButtonMode: OverlayVisibilityMode.always,

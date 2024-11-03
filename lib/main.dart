@@ -1,12 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ventipro/routes.dart';
-import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app/core/employee/reports/state_manager/employee_state_manager.dart';
+import 'app/core/notification/model/notification_entity.dart';
+import 'app/core/notification/state_manager/notification_state_manager.dart';
 import 'landing/landing_page.dart';
+import 'routes.dart';
+import 'state_manager/restaurant_state_manager.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background messages if needed
@@ -14,13 +18,19 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   await initializeDateFormatting('it', null);
+  await _setupFirebaseMessaging();
+  runApp(const _20PRO());
+}
 
+Future<void> _setupFirebaseMessaging() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  final NotificationStateManager notificationStateManager = NotificationStateManager();
+
+
+  // Request permission for notifications
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     announcement: false,
@@ -30,7 +40,6 @@ Future<void> main() async {
     provisional: false,
     sound: true,
   );
-
 
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
@@ -42,28 +51,40 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(const _20PRO());
+  // Handle messages when the app is in the foreground
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print('Received a foreground message: ${message.messageId}');
+    print('Message data: ${message.toMap().toString()}');
+
+    // Retrieve the current context using a navigator key
+    if (navigatorKey.currentContext != null) {
+      final notification = NotificationModel(title: message.notification!.title!,
+          body: message.notification!.body!, dateReceived: DateTime.now().toUtc().toIso8601String());
+
+      await notificationStateManager.addNotification(notification);
+    }
+  });
 }
+
 
 class _20PRO extends StatelessWidget {
   const _20PRO({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => RestaurantStateManager(),
-        ),
+        ChangeNotifierProvider(create: (context) => RestaurantStateManager(),),
+        ChangeNotifierProvider(create: (context) => NotificationStateManager()),
+        ChangeNotifierProvider(create: (context) => EmployeeStateManager()),
       ],
       child: MaterialApp(
-        supportedLocales: [
-          const Locale('en', ''), // English
-          const Locale('it', ''), // Italian
-          // Add other locales you want to support
+        navigatorKey: navigatorKey, // Make sure to add the navigator key here
+        supportedLocales: const [
+          Locale('en', ''), // English
+          Locale('it', ''), // Italian
         ],
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -80,3 +101,6 @@ class _20PRO extends StatelessWidget {
     );
   }
 }
+
+// Define a global navigator key for context retrieval
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

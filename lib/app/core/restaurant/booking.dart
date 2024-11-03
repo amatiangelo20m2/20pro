@@ -2,8 +2,134 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:ventipro/global/style.dart';
 import 'package:vibration/vibration.dart';
+
+import '../../../api/restaurant_client/lib/api.dart';
+import '../../../global/style.dart';
+import 'booking_card.dart';
+
+List<BookingDTO> bookings = [
+  BookingDTO(
+    bookingId: 12,
+    formCode: 'A123',
+    branchCode: 'BR001',
+    bookingCode: 'BK2024',
+    bookingDate: DateTime.now().add(Duration(days: 2)),
+    timeSlot: TimeSlot(
+      timeRangeCode: 'T001',
+      bookingHour: 19,
+      bookingMinutes: 0,
+    ),
+    numGuests: 4,
+    status: BookingDTOStatusEnum.PENDING,
+    specialRequests: 'Window seat, please.',
+    customer: CustomerDTO(
+      customerId: 124124,
+      firstName: 'Alice',
+      lastName: 'Rossi',
+      email: 'alice.rossi@example.com',
+      phone: '+39 345 678 9012',
+      birthDate: DateTime(1985, 3, 20),
+      city: 'Rome',
+      country: 'Italy',
+      privacyConsent: true,
+      marketingConsent: false,
+      profilingConsent: true,
+      registrationDate: DateTime(2021, 5, 15),
+    ),
+    comingWithDogs: false,
+  ),
+  BookingDTO(
+    bookingId: 1233,
+    formCode: 'A123',
+    branchCode: 'BR001',
+    bookingCode: 'BK2024',
+    bookingDate: DateTime.now().add(Duration(days: 2)),
+    timeSlot: TimeSlot(
+      timeRangeCode: 'T001',
+      bookingHour: 19,
+      bookingMinutes: 0,
+    ),
+    numGuests: 4,
+    status: BookingDTOStatusEnum.CANCELLED,
+    specialRequests: 'Window seat, please.',
+    customer: CustomerDTO(
+      customerId: 124124,
+      firstName: 'Angelo',
+      lastName: 'Amati',
+      email: 'alice.rossi@example.com',
+      phone: '+39 345 678 9012',
+      birthDate: DateTime(1985, 3, 20),
+      city: 'Rome',
+      country: 'Italy',
+      privacyConsent: true,
+      marketingConsent: false,
+      profilingConsent: true,
+      registrationDate: DateTime(2021, 5, 15),
+    ),
+    comingWithDogs: true,
+  ),
+  BookingDTO(
+    bookingId: 12,
+    formCode: 'A123',
+    branchCode: 'BR001',
+    bookingCode: 'BK2024',
+    bookingDate: DateTime.now().add(Duration(days: 2)),
+    timeSlot: TimeSlot(
+      timeRangeCode: 'T001',
+      bookingHour: 19,
+      bookingMinutes: 0,
+    ),
+    numGuests: 4,
+    status: BookingDTOStatusEnum.CONFIRMED,
+    specialRequests: 'Window seat, please.',
+    customer: CustomerDTO(
+      customerId: 124124,
+      firstName: 'Gianfranco',
+      lastName: 'Pizzutoli',
+      email: 'alice.rossi@example.com',
+      phone: '+39 345 678 9012',
+      birthDate: DateTime(1985, 3, 20),
+      city: 'Rome',
+      country: 'Italy',
+      privacyConsent: true,
+      marketingConsent: false,
+      profilingConsent: true,
+      registrationDate: DateTime(2021, 5, 15),
+    ),
+    comingWithDogs: true,
+  ),
+  BookingDTO(
+    bookingId: 12,
+    formCode: 'A123',
+    branchCode: 'BR001',
+    bookingCode: 'BK2024',
+    bookingDate: DateTime.now().add(Duration(days: 2)),
+    timeSlot: TimeSlot(
+      timeRangeCode: 'T001',
+      bookingHour: 19,
+      bookingMinutes: 0,
+    ),
+    numGuests: 4,
+    status: BookingDTOStatusEnum.PENDING,
+    specialRequests: 'Window seat, please.',
+    customer: CustomerDTO(
+      customerId: 124124,
+      firstName: 'Alice',
+      lastName: 'Rossi',
+      email: 'alice.rossi@example.com',
+      phone: '+39 345 678 9012',
+      birthDate: DateTime(1985, 3, 20),
+      city: 'Rome',
+      country: 'Italy',
+      privacyConsent: true,
+      marketingConsent: false,
+      profilingConsent: true,
+      registrationDate: DateTime(2021, 5, 15),
+    ),
+    comingWithDogs: false,
+  ),
+];
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -20,8 +146,6 @@ class _BookingScreenState extends State<BookingScreen> {
 
   bool isTodaySelected = true;
   bool isTomorrowSelected = false;
-
-  final italianDateFormat = DateFormat('EEEE d MMMM y', 'it_IT');
 
   @override
   void initState() {
@@ -63,7 +187,7 @@ class _BookingScreenState extends State<BookingScreen> {
     Fluttertoast.showToast(
       webShowClose: true,
       timeInSecForIosWeb: 1,
-      msg: 'Prenotazioni data ' + italianDateFormat.format(_selectedDate),
+      msg: 'Prenotazioni data ${italianDateFormat.format(_selectedDate)}',
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.black,
@@ -153,7 +277,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     Vibration.vibrate(duration: 1000);
                     _scrollToToday();
                   },
-                  child: Text('Oggi', style: TextStyle(fontWeight: FontWeight.bold, color: isTodaySelected ? globalBlue : Colors.grey),),
+                  child: Text('Oggi', style: TextStyle(fontWeight: FontWeight.bold, color: isTodaySelected ? Colors.blueGrey.shade900 : Colors.grey),),
                 ),
                 SizedBox(width: 10),
                 TextButton(
@@ -161,8 +285,12 @@ class _BookingScreenState extends State<BookingScreen> {
                     Vibration.vibrate(duration: 1000);
                     _scrollToTomorrow();
                   },
-                  child: Text('Domani', style: TextStyle(fontWeight: FontWeight.bold, color: isTomorrowSelected ? globalBlue : Colors.grey),),
+                  child: Text('Domani', style: TextStyle(fontWeight: FontWeight.bold, color: isTomorrowSelected ? Colors.blueGrey.shade900 : Colors.grey),),
                 ),
+                SizedBox(width: 10),
+                IconButton(onPressed: (){
+                  _showSortMenu(context);
+                }, icon: const Icon(CupertinoIcons.sort_down))
               ],
             ),
           ],
@@ -204,10 +332,10 @@ class _BookingScreenState extends State<BookingScreen> {
                 return GestureDetector(
                   onTap: () => _onDaySelected(day),
                   child: Container(
-                    width: 65,
+                    width: 80,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
-                      color: isSelected ? globalBlue : Colors.grey[100],
+                      color: isSelected ? Colors.blueGrey.shade900 : Colors.grey[100],
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Column(
@@ -228,28 +356,44 @@ class _BookingScreenState extends State<BookingScreen> {
                               isSelected ? Colors.white : Colors.black),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          '0 Tavoli',
-                          style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.black),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.table_bar_outlined, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
+
+                            Text(
+                              '20 Tavoli',
+                              style: TextStyle(
+                                  fontSize: 7,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+
+                          ],
                         ),
-                        Text(
-                          '0 pax',
-                          style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                              color: isSelected
-                                  ? Colors.white
-                                  : Colors.black),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.people_outline, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
+
+                            Text(
+                              '100 Persone',
+                              style: TextStyle(
+                                  fontSize: 7,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+                           ],
                         ),
+
                       ],
                     ),
                   ),
@@ -266,11 +410,63 @@ class _BookingScreenState extends State<BookingScreen> {
           ),
         ),
         Expanded(
-          flex: 6,
-          child: Text(''),
+          flex: 5,
+          child: ListView.builder(
+            padding: EdgeInsets.only(bottom: 160),
+            itemCount: bookings.length,
+            itemBuilder: (context, index) {
+              return ReservationCard(booking: bookings[index]);
+            },
+          ),
         ),
 
       ],
     );
   }
+
+    void _showSortMenu(BuildContext context) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+          title: Text('Ordina prenotazioni per'),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context, 'arrival_time');
+                print("Sorting by arrival time");
+              },
+              child: Text('Ordina per ora arrivo'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context, 'booking_date');
+                print("Sorting by booking date");
+              },
+              child: Text('Ordina per data prenotazione'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context, 'name');
+                print("Sorting by name");
+              },
+              child: Text('Ordina per nome'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context, 'status');
+                print("Sorting by status");
+              },
+              child: Text('Ordina per stato prenotazione'),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, null); // Close without any action
+            },
+            isDefaultAction: true,
+            child: Text('Cancel'),
+          ),
+        ),
+      );
+    }
 }

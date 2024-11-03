@@ -23,8 +23,20 @@ dependencies:
   vibration: ^2.0.1
   fluttertoast: ^8.2.8
   flutter_localization: ^0.2.1
+  badges: ^3.1.2
+  flutter_local_notifications: ^18.0.0
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  shared_preferences: ^2.2.3
+  file_picker: ^8.0.3
+  lottie: ^3.1.0
+  excel: ^4.0.3
+  share_plus: ^7.2.2
+  syncfusion_flutter_xlsio: ^25.2.3
+  path_provider: ^2.1.4
+  flutter_svg: ^2.0.10+1
 
-
+  
 dev_dependencies:
 
   flutter_test:
@@ -42,3 +54,5 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/lotties/
+    - assets/svg/

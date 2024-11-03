@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:ventipro/app/core/restaurant/booking.dart';
-import 'package:ventipro/global/style.dart';
-import 'package:vibration/vibration.dart';
+import 'package:badges/badges.dart' as badges;
+import 'customer/customer_screen.dart';
+import 'employee/reports/report_employee_presence.dart';
+import 'notification/NotificationScreen.dart';
+import 'notification/model/notification_entity.dart';
+import 'notification/state_manager/notification_state_manager.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = 'main_screen';
@@ -20,78 +23,145 @@ class _MainScreenState extends State<MainScreen> {
   // Index of the currently selected button
   int _selectedIndex = 0;
 
+
   final List<Widget> _screens = [
     const BookingScreen(),
-    const Center(child: Text('People Screen')),
+    const CustomerScreen(),
     const Center(child: Text('Shopping Screen')),
+    const ReportEmployeePresence()
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.bell)),
-        ],
-        title: Text('20PRO'),
-      ),
-      body: Stack(
-        children: [
-          // Display the selected screen based on button index
-          _screens[_selectedIndex],
-          Positioned(
-            bottom: 30, // Position from the bottom
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Consumer<NotificationStateManager>(
+      builder: (BuildContext context, NotificationStateManager value, Widget? child) {
+        return Scaffold(
+          floatingActionButton: _selectedIndex == 0 ?  FloatingActionButton(
+            backgroundColor: Colors.blueGrey.shade900,
+            child: const Icon(CupertinoIcons.add, color: Colors.white,),
+            onPressed: () {
+            value.addNotification(
+              NotificationModel(
+                title: 'New Notification',
+                body: 'This is a test notification',
+                dateReceived: DateTime.now().toIso8601String(),
+              ),
+            );
+          },) : null,
+          drawer: Drawer(),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            actions: [
+              Consumer<NotificationStateManager>(
+                builder: (BuildContext context, NotificationStateManager value, Widget? child) {
+                  return IconButton(onPressed: () {
+                    Navigator.pushNamed(context, NotificationsPage.routeName);
+                  }, icon: badges.Badge(
+                      badgeContent: Text(value.notifications.length.toString(), style: TextStyle(color: Colors.white),),
+                      position: badges.BadgePosition.topEnd(),
+                      child: const Icon(CupertinoIcons.bell))
+                  );
+                },
+              ),
+            ],
+            title: Row(
               children: [
-                FloatingActionButton(
-                  heroTag: "btn1",
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = 0; // Set index for Calendar Screen
-                    });
-                  },
-                  mini: _selectedIndex != 0, // Set to mini if not selected
-                  backgroundColor: _selectedIndex == 0 ? Colors.blue : Colors.grey.shade100, // Set background color based on selection
-                  foregroundColor: _selectedIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
-                  child: Icon(Icons.calendar_month),
-                ),
-                const SizedBox(width: 15), // Space between buttons
-                FloatingActionButton(
-                  heroTag: "btn2",
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = 1; // Set index for People Screen
-                    });
-                  },
-                  mini: _selectedIndex != 1, // Set to mini if not selected
-                  backgroundColor: _selectedIndex == 1 ? Colors.blue : Colors.grey.shade100, // Set background color based on selection
-                  foregroundColor: _selectedIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
-                  child: Icon(Icons.people),
-                ),
-                const SizedBox(width: 15),
-                FloatingActionButton(
-                  heroTag: "btn3",
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = 2; // Set index for Shopping Screen
-                    });
-                  },
-                  mini: _selectedIndex != 2, // Set to mini if not selected
-                  backgroundColor: _selectedIndex == 2 ? Colors.blue : Colors.grey.shade100, // Set background color based on selection
-                  foregroundColor: _selectedIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
-                  child: Icon(Icons.shopping_bag_outlined),
-                ),
+                Image.asset('assets/images/logo.png', width: 25),
+                Text('20PRO'),
               ],
             ),
           ),
-        ],
-      ),
-      backgroundColor: Colors.white,
+          body: Stack(
+            children: [
+              // Display the selected screen based on button index
+              _screens[_selectedIndex],
+              Positioned(
+                bottom: 30, // Position from the bottom
+                left: 0,
+                right: 0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FloatingActionButton(
+                          heroTag: "btn1",
+                          onPressed: () {
+                            setState(() {
+                              _selectedIndex = 0; // Set index for Calendar Screen
+                            });
+                          },
+                          mini: _selectedIndex != 0, // Set to mini if not selected
+                          backgroundColor: _selectedIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                          foregroundColor: _selectedIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
+                          child: const badges.Badge(
+                              badgeContent: Text(
+                                '1',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              child: Icon(CupertinoIcons.calendar)
+                          ),
+                        ),
+                        const SizedBox(width: 15), // Space between buttons
+                        FloatingActionButton(
+                          heroTag: "btn2",
+                          onPressed: () {
+                            setState(() {
+                              _selectedIndex = 1; // Set index for People Screen
+                            });
+                          },
+                          mini: _selectedIndex != 1, // Set to mini if not selected
+                          backgroundColor: _selectedIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                          foregroundColor: _selectedIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
+                          child: const Icon(CupertinoIcons.person_2),
+                        ),
+                        const SizedBox(width: 15),
+                        FloatingActionButton(
+                          heroTag: "btn3",
+                          onPressed: () {
+                            setState(() {
+                              _selectedIndex = 2; // Set index for Shopping Screen
+                            });
+                          },
+                          mini: _selectedIndex != 2, // Set to mini if not selected
+                          backgroundColor: _selectedIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                          foregroundColor: _selectedIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
+                          child: const Icon(CupertinoIcons.bag),
+                        ),
+                        const SizedBox(width: 15),
+                        FloatingActionButton(
+                          heroTag: "btn4",
+                          onPressed: () {
+                            setState(() {
+                              _selectedIndex = 3; // Set index for Shopping Screen
+                            });
+                          },
+                          mini: _selectedIndex != 3, // Set to mini if not selected
+                          backgroundColor: _selectedIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                          foregroundColor: _selectedIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
+                          child: const Icon(CupertinoIcons.doc_plaintext),
+                        ),
+                      ],
+                    ),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Powerade by ', style: TextStyle(fontSize: 6),),
+                          Image.asset('assets/images/logo-black.png', width: 15),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.white,
+        );
+      },
     );
   }
 }
