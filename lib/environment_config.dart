@@ -1,6 +1,6 @@
-String host = 'http://192.168.1.226';
+// String host = 'http://192.168.1.226';
 // String host = 'http://172.20.10.8';
-// String host = 'http://192.168.1.4';
+String host = 'http://192.168.1.4';
 // String host = 'https://20m2datacloud.com';
 
 String customBasePathAuth = '${host}:8088/ventimetriauth';

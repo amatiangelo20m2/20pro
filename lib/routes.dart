@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import 'app/core/notification/NotificationScreen.dart';
+import 'app/core/notification/notification_screen.dart';
 import 'app/core/restaurant/booking.dart';
 
 class Routes {

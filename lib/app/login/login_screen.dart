@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/src/response.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/app/core/main_screen.dart';
@@ -67,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
       mdd.platform = Platform.operatingSystem;
       mdd.machine = iosInfo.utsname.machine;
       mdd.release = iosInfo.utsname.release;
-      mdd.uniquePhoneIdentifier = iosInfo.identifierForVendor;
-      mdd.systemVersion = iosInfo.systemVersion;
+      mdd.uniquePhoneIdentifier = await PlatformDeviceId.getDeviceId ?? 'Unknown ID';
+      mdd.systemVersion = iosInfo.identifierForVendor;
     }
   }
 
@@ -164,9 +165,6 @@ class _LoginPageState extends State<LoginPage> {
       print("Password: ${_passwordController.text}");
       print("Branch Code: ${_branchCodeController.text}");
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
 
       mdd.registrationDate = DateTime.now();
       var response = await Provider.of<RestaurantStateManager>(context, listen: false)
@@ -186,6 +184,7 @@ class _LoginPageState extends State<LoginPage> {
               .deserializeAsync(await _decodeBodyBytes(response), 'EmployeeDTO') as EmployeeDTO;
 
           Provider.of<RestaurantStateManager>(context, listen: false).setCurrentEmployee(employeeDTO);
+          Provider.of<RestaurantStateManager>(context, listen: false).selectBookingForCurrentDay(DateTime.now());
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const MainScreen()),
           );

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 
 import '../environment_config.dart';
@@ -7,7 +8,10 @@ class RestaurantStateManager extends ChangeNotifier {
   late ApiClient _restaurantClient;
   late RestaurantControllerApi _restaurantControllerApi;
 
-  EmployeeDTO? _currentEmployee; // Field to store the logged-in employee
+  late BookingControllerApi _bookingControllerApi;
+  EmployeeDTO? _currentEmployee;
+
+  List<BookingDTO>? _currentBookings = []; // Field to store the logged-in employee
 
   RestaurantStateManager() {
     _initializeClient();
@@ -23,6 +27,7 @@ class RestaurantStateManager extends ChangeNotifier {
 
     _restaurantClient = ApiClient(basePath: customBasePathRestaurant);
     _restaurantControllerApi = RestaurantControllerApi(_restaurantClient);
+    _bookingControllerApi = BookingControllerApi(_restaurantClient);
   }
 
   void setCurrentEmployee(EmployeeDTO employee) {
@@ -35,6 +40,20 @@ class RestaurantStateManager extends ChangeNotifier {
 
   selectDateFromCutomCalendar(DateTime dateTime) {
     selectedDate = dateTime;
+    notifyListeners();
+  }
+
+
+  List<BookingDTO>? get currentBookings => _currentBookings;
+
+
+  Future<void> selectBookingForCurrentDay(DateTime dateTime) async {
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
+    _currentBookings = await _bookingControllerApi
+        .retrieveBookingByBranchCodeAndDate(_currentEmployee!.branchCode!, formattedDate);
+
     notifyListeners();
   }
 }

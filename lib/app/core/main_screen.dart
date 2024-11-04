@@ -6,7 +6,7 @@ import 'package:ventipro/app/core/restaurant/booking.dart';
 import 'package:badges/badges.dart' as badges;
 import 'customer/customer_screen.dart';
 import 'employee/reports/report_employee_presence.dart';
-import 'notification/NotificationScreen.dart';
+import 'notification/notification_screen.dart';
 import 'notification/model/notification_entity.dart';
 import 'notification/state_manager/notification_state_manager.dart';
 
@@ -50,8 +50,10 @@ class _MainScreenState extends State<MainScreen> {
           },) : null,
           drawer: Drawer(),
           appBar: AppBar(
+            surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             actions: [
+
               Consumer<NotificationStateManager>(
                 builder: (BuildContext context, NotificationStateManager value, Widget? child) {
                   return IconButton(onPressed: () {
@@ -65,9 +67,83 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.asset('assets/images/logo.png', width: 25),
-                Text('20PRO'),
+                Row(
+                  children: [
+                    Image.asset('assets/images/logo.png', width: 25),
+                    Text('20PRO'),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton(
+                      heroTag: "btn1",
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 0; // Set index for Calendar Screen
+                        });
+                      },
+                      mini: _selectedIndex != 0, // Set to mini if not selected
+                      backgroundColor: _selectedIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _selectedIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const badges.Badge(
+                          badgeContent: Text(
+                            '1',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          child: Icon(CupertinoIcons.calendar)
+                      ),
+                    ),
+                    const SizedBox(width: 15), // Space between buttons
+                    FloatingActionButton(
+                      heroTag: "btn2",
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 1; // Set index for People Screen
+                        });
+                      },
+                      mini: _selectedIndex != 1, // Set to mini if not selected
+                      backgroundColor: _selectedIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _selectedIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const badges.Badge(
+                          badgeContent: Text(
+                            '3',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          child: Icon(CupertinoIcons.globe)
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    FloatingActionButton(
+                      heroTag: "btn3",
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 2; // Set index for Shopping Screen
+                        });
+                      },
+                      mini: _selectedIndex != 2, // Set to mini if not selected
+                      backgroundColor: _selectedIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _selectedIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const Icon(CupertinoIcons.clear),
+                    ),
+                    const SizedBox(width: 15),
+                    FloatingActionButton(
+                      heroTag: "btn4",
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 3; // Set index for Shopping Screen
+                        });
+                      },
+                      mini: _selectedIndex != 3, // Set to mini if not selected
+                      backgroundColor: _selectedIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _selectedIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const Icon(CupertinoIcons.doc_plaintext),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 0,)
               ],
             ),
           ),
@@ -83,68 +159,7 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FloatingActionButton(
-                          heroTag: "btn1",
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 0; // Set index for Calendar Screen
-                            });
-                          },
-                          mini: _selectedIndex != 0, // Set to mini if not selected
-                          backgroundColor: _selectedIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                          foregroundColor: _selectedIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
-                          child: const badges.Badge(
-                              badgeContent: Text(
-                                '1',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              child: Icon(CupertinoIcons.calendar)
-                          ),
-                        ),
-                        const SizedBox(width: 15), // Space between buttons
-                        FloatingActionButton(
-                          heroTag: "btn2",
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 1; // Set index for People Screen
-                            });
-                          },
-                          mini: _selectedIndex != 1, // Set to mini if not selected
-                          backgroundColor: _selectedIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                          foregroundColor: _selectedIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
-                          child: const Icon(CupertinoIcons.person_2),
-                        ),
-                        const SizedBox(width: 15),
-                        FloatingActionButton(
-                          heroTag: "btn3",
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 2; // Set index for Shopping Screen
-                            });
-                          },
-                          mini: _selectedIndex != 2, // Set to mini if not selected
-                          backgroundColor: _selectedIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                          foregroundColor: _selectedIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
-                          child: const Icon(CupertinoIcons.bag),
-                        ),
-                        const SizedBox(width: 15),
-                        FloatingActionButton(
-                          heroTag: "btn4",
-                          onPressed: () {
-                            setState(() {
-                              _selectedIndex = 3; // Set index for Shopping Screen
-                            });
-                          },
-                          mini: _selectedIndex != 3, // Set to mini if not selected
-                          backgroundColor: _selectedIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                          foregroundColor: _selectedIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
-                          child: const Icon(CupertinoIcons.doc_plaintext),
-                        ),
-                      ],
-                    ),
+
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

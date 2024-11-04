@@ -5,7 +5,7 @@
 import 'package:ventimetri_api_restaurant/api.dart';
 ```
 
-All URIs are relative to *http://LAPTOP-0FAJKSQ8.lan:20193/restaurantservice*
+All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

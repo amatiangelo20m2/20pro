@@ -2,134 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
-
-import '../../../api/restaurant_client/lib/api.dart';
 import '../../../global/style.dart';
 import 'booking_card.dart';
-
-List<BookingDTO> bookings = [
-  BookingDTO(
-    bookingId: 12,
-    formCode: 'A123',
-    branchCode: 'BR001',
-    bookingCode: 'BK2024',
-    bookingDate: DateTime.now().add(Duration(days: 2)),
-    timeSlot: TimeSlot(
-      timeRangeCode: 'T001',
-      bookingHour: 19,
-      bookingMinutes: 0,
-    ),
-    numGuests: 4,
-    status: BookingDTOStatusEnum.PENDING,
-    specialRequests: 'Window seat, please.',
-    customer: CustomerDTO(
-      customerId: 124124,
-      firstName: 'Alice',
-      lastName: 'Rossi',
-      email: 'alice.rossi@example.com',
-      phone: '+39 345 678 9012',
-      birthDate: DateTime(1985, 3, 20),
-      city: 'Rome',
-      country: 'Italy',
-      privacyConsent: true,
-      marketingConsent: false,
-      profilingConsent: true,
-      registrationDate: DateTime(2021, 5, 15),
-    ),
-    comingWithDogs: false,
-  ),
-  BookingDTO(
-    bookingId: 1233,
-    formCode: 'A123',
-    branchCode: 'BR001',
-    bookingCode: 'BK2024',
-    bookingDate: DateTime.now().add(Duration(days: 2)),
-    timeSlot: TimeSlot(
-      timeRangeCode: 'T001',
-      bookingHour: 19,
-      bookingMinutes: 0,
-    ),
-    numGuests: 4,
-    status: BookingDTOStatusEnum.CANCELLED,
-    specialRequests: 'Window seat, please.',
-    customer: CustomerDTO(
-      customerId: 124124,
-      firstName: 'Angelo',
-      lastName: 'Amati',
-      email: 'alice.rossi@example.com',
-      phone: '+39 345 678 9012',
-      birthDate: DateTime(1985, 3, 20),
-      city: 'Rome',
-      country: 'Italy',
-      privacyConsent: true,
-      marketingConsent: false,
-      profilingConsent: true,
-      registrationDate: DateTime(2021, 5, 15),
-    ),
-    comingWithDogs: true,
-  ),
-  BookingDTO(
-    bookingId: 12,
-    formCode: 'A123',
-    branchCode: 'BR001',
-    bookingCode: 'BK2024',
-    bookingDate: DateTime.now().add(Duration(days: 2)),
-    timeSlot: TimeSlot(
-      timeRangeCode: 'T001',
-      bookingHour: 19,
-      bookingMinutes: 0,
-    ),
-    numGuests: 4,
-    status: BookingDTOStatusEnum.CONFIRMED,
-    specialRequests: 'Window seat, please.',
-    customer: CustomerDTO(
-      customerId: 124124,
-      firstName: 'Gianfranco',
-      lastName: 'Pizzutoli',
-      email: 'alice.rossi@example.com',
-      phone: '+39 345 678 9012',
-      birthDate: DateTime(1985, 3, 20),
-      city: 'Rome',
-      country: 'Italy',
-      privacyConsent: true,
-      marketingConsent: false,
-      profilingConsent: true,
-      registrationDate: DateTime(2021, 5, 15),
-    ),
-    comingWithDogs: true,
-  ),
-  BookingDTO(
-    bookingId: 12,
-    formCode: 'A123',
-    branchCode: 'BR001',
-    bookingCode: 'BK2024',
-    bookingDate: DateTime.now().add(Duration(days: 2)),
-    timeSlot: TimeSlot(
-      timeRangeCode: 'T001',
-      bookingHour: 19,
-      bookingMinutes: 0,
-    ),
-    numGuests: 4,
-    status: BookingDTOStatusEnum.PENDING,
-    specialRequests: 'Window seat, please.',
-    customer: CustomerDTO(
-      customerId: 124124,
-      firstName: 'Alice',
-      lastName: 'Rossi',
-      email: 'alice.rossi@example.com',
-      phone: '+39 345 678 9012',
-      birthDate: DateTime(1985, 3, 20),
-      city: 'Rome',
-      country: 'Italy',
-      privacyConsent: true,
-      marketingConsent: false,
-      profilingConsent: true,
-      registrationDate: DateTime(2021, 5, 15),
-    ),
-    comingWithDogs: false,
-  ),
-];
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -146,6 +23,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   bool isTodaySelected = true;
   bool isTomorrowSelected = false;
+
+  bool _searchField = false;
 
   @override
   void initState() {
@@ -167,7 +46,8 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  void _onDaySelected(DateTime day) {
+  Future<void> _onDaySelected(DateTime day,
+      RestaurantStateManager restaurantStateManager) async {
     final today = DateTime.now();
     final tomorrow = DateTime.now().add(Duration(days: 1));
 
@@ -184,10 +64,12 @@ class _BookingScreenState extends State<BookingScreen> {
       _scrollToSelectedDay();
     });
 
+    await restaurantStateManager.selectBookingForCurrentDay(_selectedDate);
+
     Fluttertoast.showToast(
       webShowClose: true,
       timeInSecForIosWeb: 1,
-      msg: 'Prenotazioni data ${italianDateFormat.format(_selectedDate)}',
+      msg: 'Prenotazioni di ${italianDateFormat.format(_selectedDate)}',
       toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.black,
@@ -208,7 +90,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-  void _scrollToToday() {
+  void _scrollToToday(RestaurantStateManager restaurantManager) {
     final todayIndex = _days.indexWhere(
             (day) => day.day == DateTime.now().day && day.month == DateTime.now().month && day.year == DateTime.now().year);
     if (todayIndex != -1) {
@@ -217,8 +99,10 @@ class _BookingScreenState extends State<BookingScreen> {
         isTodaySelected = true;
         isTomorrowSelected = false;
         _scrollToSelectedDay();
+        _onDaySelected(_selectedDate, restaurantManager);
       });
     }
+
     Fluttertoast.showToast(
       webShowClose: true,
       timeInSecForIosWeb: 6,
@@ -231,7 +115,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  void _scrollToTomorrow() {
+  void _scrollToTomorrow(RestaurantStateManager restaurantManager) {
     final tomorrow = DateTime.now().add(Duration(days: 1));
     final tomorrowIndex = _days.indexWhere(
             (day) => day.day == tomorrow.day && day.month == tomorrow.month && day.year == tomorrow.year);
@@ -241,8 +125,10 @@ class _BookingScreenState extends State<BookingScreen> {
         isTodaySelected = false;
         isTomorrowSelected = true;
         _scrollToSelectedDay();
+        _onDaySelected(_selectedDate, restaurantManager);
       });
     }
+
     Fluttertoast.showToast(
       webShowClose: true,
       timeInSecForIosWeb: 6,
@@ -264,209 +150,268 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return Consumer<RestaurantStateManager>(
+      builder: (BuildContext context, RestaurantStateManager restaurantManager, Widget? child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
-                  onPressed: () {
-                    Vibration.vibrate(duration: 1000);
-                    _scrollToToday();
-                  },
-                  child: Text('Oggi', style: TextStyle(fontWeight: FontWeight.bold, color: isTodaySelected ? Colors.blueGrey.shade900 : Colors.grey),),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Vibration.vibrate(duration: 1000);
+                        _scrollToToday(restaurantManager);
+                      },
+                      child: Text('Oggi', style: TextStyle(fontWeight: FontWeight.bold, color: isTodaySelected ? Colors.blueGrey.shade900 : Colors.grey),),
+                    ),
+                    SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () {
+                        Vibration.vibrate(duration: 1000);
+                        _scrollToTomorrow(restaurantManager);
+                      },
+                      child: Text('Domani', style: TextStyle(fontWeight: FontWeight.bold, color: isTomorrowSelected ? Colors.blueGrey.shade900 : Colors.grey),),
+                    ),
+                    SizedBox(width: 20),
+                    IconButton(onPressed: (){
+                      _selectDate(context, _selectedDate, restaurantManager);
+                      // _pickDateRange(context);
+                    }, icon: Icon(CupertinoIcons.calendar, color:  Colors.blueGrey)),
+                    IconButton(onPressed: (){
+                      _showSortMenu(context);
+                    }, icon: const Icon(CupertinoIcons.sort_down,color: Colors.blueGrey)),
+
+                    IconButton(onPressed: (){
+                      setState(() {
+                        _searchField = !_searchField;
+                      });
+                    }, icon: const Icon(CupertinoIcons.search)),
+
+                  ],
                 ),
-                SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    Vibration.vibrate(duration: 1000);
-                    _scrollToTomorrow();
-                  },
-                  child: Text('Domani', style: TextStyle(fontWeight: FontWeight.bold, color: isTomorrowSelected ? Colors.blueGrey.shade900 : Colors.grey),),
-                ),
-                SizedBox(width: 10),
-                IconButton(onPressed: (){
-                  _showSortMenu(context);
-                }, icon: const Icon(CupertinoIcons.sort_down))
               ],
             ),
-          ],
-        ),
-        Expanded(
-          flex: 1,
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (scrollNotification) {
-              if (scrollNotification is ScrollUpdateNotification) {
-                final firstVisibleIndex = (scrollNotification.metrics.pixels /
-                    (scrollNotification.metrics.maxScrollExtent /
-                        (_days.length - 1)))
-                    .floor();
-                if (firstVisibleIndex >= 0 &&
-                    firstVisibleIndex < _days.length) {
-                  final visibleDay = _days[firstVisibleIndex];
-
-                  // Check if the selected date is outside the visible range
-                  if (!_days.contains(_selectedDate)) {
-                    // Only update _selectedDate if the user taps on a different day
-                    setState(() {
-                      _selectedDate = visibleDay;
-                    });
+            Expanded(
+              flex: 1,
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (scrollNotification is ScrollUpdateNotification) {
+                    final firstVisibleIndex = (scrollNotification.metrics.pixels /
+                        (scrollNotification.metrics.maxScrollExtent /
+                            (_days.length - 1)))
+                        .floor();
+                    if (firstVisibleIndex >= 0 &&
+                        firstVisibleIndex < _days.length) {
+                      final visibleDay = _days[firstVisibleIndex];
+                      // Check if the selected date is outside the visible range
+                      if (!_days.contains(_selectedDate)) {
+                        // Only update _selectedDate if the user taps on a different day
+                        setState(() {
+                          _selectedDate = visibleDay;
+                        });
+                      }
+                    }
                   }
-                }
-              }
-              return false;
-            },
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: _days.length,
-              itemBuilder: (context, index) {
-                final day = _days[index];
-                final isSelected = _selectedDate.day == day.day &&
-                    _selectedDate.month == day.month &&
-                    _selectedDate.year == day.year;
+                  return false;
+                },
+                child: ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _days.length,
+                  itemBuilder: (context, index) {
+                    final day = _days[index];
+                    final isSelected = _selectedDate.day == day.day &&
+                        _selectedDate.month == day.month &&
+                        _selectedDate.year == day.year;
 
-                return GestureDetector(
-                  onTap: () => _onDaySelected(day),
-                  child: Container(
-                    width: 80,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.blueGrey.shade900 : Colors.grey[100],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          capitalizeFirstLetter(
-                              DateFormat.E('it').format(day).substring(0, 3)),
-                          style: TextStyle(
-                              color:
-                              isSelected ? Colors.white : Colors.black),
+                    return GestureDetector(
+                      onTap: () => _onDaySelected(day, restaurantManager),
+                      child: Container(
+                        width: 80,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blueGrey.shade900 : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          '${day.day}',
-                          style: TextStyle(
-                              color:
-                              isSelected ? Colors.white : Colors.black),
-                        ),
-                        const SizedBox(height: 2),
-                        Row(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.table_bar_outlined, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
-
                             Text(
-                              '20 Tavoli',
+                              capitalizeFirstLetter(
+                                  DateFormat.E('it').format(day).substring(0, 3)),
                               style: TextStyle(
-                                  fontSize: 7,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.black),
+                                  color:
+                                  isSelected ? Colors.white : Colors.black),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${day.day}',
+                              style: TextStyle(
+                                  color:
+                                  isSelected ? Colors.white : Colors.black),
+                            ),
+                            const SizedBox(height: 2),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.table_bar_outlined, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
+
+                                Text(
+                                  '20 Tavoli',
+                                  style: TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.people_outline, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
+
+                                Text(
+                                  '100 Persone',
+                                  style: TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ],
                             ),
 
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.people_outline, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
-
-                            Text(
-                              '100 Persone',
-                              style: TextStyle(
-                                  fontSize: 7,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.black),
-                            ),
-                           ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-                );
-              },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),
+                ),
+              ),
             ),
-          ),
-        ),
-        Expanded(
-          flex: 5,
-          child: ListView.builder(
-            padding: EdgeInsets.only(bottom: 160),
-            itemCount: bookings.length,
-            itemBuilder: (context, index) {
-              return ReservationCard(booking: bookings[index]);
-            },
-          ),
-        ),
 
-      ],
+            if(_searchField) const Center (
+              child: Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 3),
+                child: CupertinoTextField(
+                  clearButtonMode: OverlayVisibilityMode.always,
+                  placeholder: 'Ricerca per nome, codice prenotazione mail o cellulare',
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: ListView.builder(
+                padding: EdgeInsets.only(bottom: 160),
+                itemCount: restaurantManager.currentBookings!.length,
+                itemBuilder: (context, index) {
+                  return ReservationCard(booking: restaurantManager.currentBookings![index]);
+                },
+              ),
+            ),
+
+          ],
+        );
+      },
+
     );
   }
 
-    void _showSortMenu(BuildContext context) {
-      showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) => CupertinoActionSheet(
-          title: Text('Ordina prenotazioni per'),
-          actions: [
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(context, 'arrival_time');
-                print("Sorting by arrival time");
-              },
-              child: Text('Ordina per ora arrivo'),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(context, 'booking_date');
-                print("Sorting by booking date");
-              },
-              child: Text('Ordina per data prenotazione'),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(context, 'name');
-                print("Sorting by name");
-              },
-              child: Text('Ordina per nome'),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.pop(context, 'status');
-                print("Sorting by status");
-              },
-              child: Text('Ordina per stato prenotazione'),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
+  void _showSortMenu(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: Text('Ordina prenotazioni per'),
+        actions: [
+          CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, null); // Close without any action
+              Navigator.pop(context, 'arrival_time');
+              print("Sorting by arrival time");
             },
-            isDefaultAction: true,
-            child: Text('Cancel'),
+            child: Text('Ordina per ora arrivo'),
           ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, 'booking_date');
+              print("Sorting by booking date");
+            },
+            child: Text('Ordina per data prenotazione'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, 'name');
+              print("Sorting by name");
+            },
+            child: Text('Ordina per nome'),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, 'status');
+              print("Sorting by status");
+            },
+            child: Text('Ordina per stato prenotazione'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () {
+            Navigator.pop(context, null); // Close without any action
+          },
+          isDefaultAction: true,
+          child: Text('Cancel'),
         ),
-      );
+      ),
+    );
+  }
+
+  Future<DateTime> _selectDate(BuildContext context,
+      DateTime currentDate, RestaurantStateManager restaurantStateManager) async {
+    final DateTime? picked = await showDatePicker(
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(// Header background color
+            hintColor:  Colors.blueGrey, // Header text color
+            colorScheme: ColorScheme.light(
+              primary:  Colors.blueGrey, // selection color
+              onSurface: Colors.black, // body text color
+            ),
+            dialogBackgroundColor: Colors.white, // Background color
+          ),
+          child: child!,
+        );
+      },
+      context: context,
+      initialDate: currentDate,
+      firstDate: DateTime.now().subtract(Duration(days: 200)),
+      lastDate: DateTime(2100),
+      locale: const Locale('it', 'IT'),
+    );
+    if (picked != null) {
+      final DateTime selectedDate = DateTime(picked.year, picked.month, picked.day, 10);
+      setState(() {
+        _selectedDate = selectedDate;
+        _onDaySelected(_selectedDate, restaurantStateManager);
+      });
+      return selectedDate;
+    } else {
+      return DateTime.now();
     }
+  }
 }

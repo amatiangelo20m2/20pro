@@ -5,7 +5,7 @@
 import 'package:ventimetri_api_restaurant/api.dart';
 ```
 
-All URIs are relative to *http://LAPTOP-0FAJKSQ8.lan:20193/restaurantservice*
+All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -278,7 +278,7 @@ import 'package:ventimetri_api_restaurant/api.dart';
 
 final api_instance = BookingControllerApi();
 final branchCode = branchCode_example; // String | 
-final date = 2013-10-20; // DateTime | 
+final date = date_example; // String | 
 
 try {
     final result = api_instance.retrieveBookingByBranchCodeAndDate(branchCode, date);
@@ -293,7 +293,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **branchCode** | **String**|  | 
- **date** | **DateTime**|  | 
+ **date** | **String**|  | 
 
 ### Return type
 

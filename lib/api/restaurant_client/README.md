@@ -54,7 +54,7 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://LAPTOP-0FAJKSQ8.lan:20193/restaurantservice*
+All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

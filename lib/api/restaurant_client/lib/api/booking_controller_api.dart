@@ -317,12 +317,12 @@ class BookingControllerApi {
   ///
   /// * [String] branchCode (required):
   ///
-  /// * [DateTime] date (required):
-  Future<Response> retrieveBookingByBranchCodeAndDateWithHttpInfo(String branchCode, DateTime date,) async {
+  /// * [String] date (required):
+  Future<Response> retrieveBookingByBranchCodeAndDateWithHttpInfo(String branchCode, String date,) async {
     // ignore: prefer_const_declarations
     final path = r'/api/booking/retrievebynranchcode/{branchCode}/{date}'
       .replaceAll('{branchCode}', branchCode)
-      .replaceAll('{date}', date.toString());
+      .replaceAll('{date}', date);
 
     // ignore: prefer_final_locals
     Object? postBody;
@@ -349,8 +349,8 @@ class BookingControllerApi {
   ///
   /// * [String] branchCode (required):
   ///
-  /// * [DateTime] date (required):
-  Future<List<BookingDTO>?> retrieveBookingByBranchCodeAndDate(String branchCode, DateTime date,) async {
+  /// * [String] date (required):
+  Future<List<BookingDTO>?> retrieveBookingByBranchCodeAndDate(String branchCode, String date,) async {
     final response = await retrieveBookingByBranchCodeAndDateWithHttpInfo(branchCode, date,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));

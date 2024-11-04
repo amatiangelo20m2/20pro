@@ -14,9 +14,9 @@ Name | Type | Description | Notes
 **date** | [**DateTime**](DateTime.md) |  | [optional] 
 **workedHours** | **int** |  | [optional] 
 **note** | **String** |  | [optional] 
-**holiday** | **bool** |  | [optional] 
-**presentAtLunch** | **bool** |  | [optional] 
 **illness** | **bool** |  | [optional] 
+**presentAtLunch** | **bool** |  | [optional] 
+**holiday** | **bool** |  | [optional] 
 **presentAtDinner** | **bool** |  | [optional] 
 **rest** | **bool** |  | [optional] 
 

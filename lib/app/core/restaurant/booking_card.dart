@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import '../../../api/restaurant_client/lib/api.dart';
 
@@ -12,12 +11,20 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         _showSortMenu(context, booking);
       },
       child: Dismissible(
         key: Key(booking.bookingCode.toString()),
         direction: DismissDirection.horizontal,
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.endToStart) {
+            return await _confirmReservation(context);
+          } else if (direction == DismissDirection.startToEnd) {
+            return await _cancelReservation(context);
+          }
+          return false;
+        },
         background: _buildSwipeBackground(
           alignment: Alignment.centerLeft,
           color: CupertinoColors.destructiveRed,
@@ -31,6 +38,28 @@ class ReservationCard extends StatelessWidget {
         child: _buildCardContent(context),
       ),
     );
+  }
+
+  Future<bool?> _confirmReservation(BuildContext context) async {
+
+    booking.status = BookingDTOStatusEnum.CONFIRMED;
+    _showSnackbar(context, 'Reservation confirmed.');
+    return false; // Prevent automatic dismissal
+  }
+
+  Future<bool?> _cancelReservation(BuildContext context) async {
+    booking.status = BookingDTOStatusEnum.CANCELLED;
+    _showSnackbar(context, 'Reservation cancelled.');
+    return false; // Prevent automatic dismissal
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _buildCardContent(BuildContext context) {
@@ -53,23 +82,10 @@ class ReservationCard extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
-              Expanded(
-                flex: 4,
-                child: _buildCustomerInfo(),
-              ),
-              Expanded(
-                flex: 2,
-                child: _buildTimeBooking(context),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: Icon(Icons.pets)),
-              Expanded(
-                flex: 2,
-                child: _buildStatusButton(context),
-              ),
-
-              
+              Expanded(flex: 3, child: _buildCustomerInfo()),
+              Expanded(flex: 1, child: _buildGuestInfo()),
+              Expanded(flex: 2, child: _buildTimeBooking(context)),
+              Expanded(flex: 2, child: _buildStatusButton(context)),
             ],
           ),
         ),
@@ -110,12 +126,13 @@ class ReservationCard extends StatelessWidget {
 
   Row _buildTimeBooking(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        Icon(CupertinoIcons.clock),
         Text(
-          '${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
+          ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 13,
             color: CupertinoColors.label,
             fontWeight: FontWeight.bold,
           ),
@@ -143,33 +160,19 @@ class ReservationCard extends StatelessWidget {
   Row _buildGuestInfo() {
     return Row(
       children: [
-        Icon(CupertinoIcons.person_2_fill, color: Colors.blueGrey.shade900),
+        Icon(CupertinoIcons.person_2, color: Colors.blueGrey.shade900),
         const SizedBox(width: 5),
         Text(
-          '${booking.numGuests ?? 0} Ospiti',
+          ' ${booking.numGuests ?? 0}',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 13,
             color: CupertinoColors.label,
           ),
         ),
-        const Spacer(),
-        if (booking.comingWithDogs ?? false)
-          Icon(CupertinoIcons.paw, color: CupertinoColors.systemBrown),
       ],
     );
   }
 
-  Text _buildSpecialRequests() {
-    return Text(
-      'Richieste speciali: ${booking.specialRequests}',
-      style: TextStyle(
-        fontSize: 14,
-        color: CupertinoColors.secondaryLabel,
-      ),
-    );
-  }
-
-  // Helper to create swipe backgrounds
   Widget _buildSwipeBackground({required Alignment alignment, required Color color, required IconData icon}) {
     return Container(
       alignment: alignment,
@@ -191,6 +194,7 @@ class ReservationCard extends StatelessWidget {
         return CupertinoColors.systemGrey;
     }
   }
+
   void _showSortMenu(BuildContext context, BookingDTO booking) {
     showCupertinoModalPopup(
       context: context,
@@ -208,8 +212,9 @@ class ReservationCard extends StatelessWidget {
               ),
             ),
             Positioned(
-                right: 0,
-                child: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.phone)))
+              right: 0,
+              child: IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.phone)),
+            ),
           ],
         ),
         actions: [
@@ -240,10 +245,9 @@ class ReservationCard extends StatelessWidget {
             Navigator.pop(context, null); // Close without any action
           },
           isDefaultAction: true,
-          child: Text('Cancel'),
+          child: const Text('Indietro'),
         ),
       ),
     );
   }
-
 }
