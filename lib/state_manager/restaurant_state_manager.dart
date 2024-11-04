@@ -6,12 +6,16 @@ import '../environment_config.dart';
 
 class RestaurantStateManager extends ChangeNotifier {
   late ApiClient _restaurantClient;
-  late RestaurantControllerApi _restaurantControllerApi;
 
+  late RestaurantControllerApi _restaurantControllerApi;
   late BookingControllerApi _bookingControllerApi;
+  late FormControllerApi _formControllerApi;
+
+
   EmployeeDTO? _currentEmployee;
 
   List<BookingDTO>? _currentBookings = []; // Field to store the logged-in employee
+  List<FormDTO>? _currentBranchForms = []; // Field to store the logged-in employee
 
   RestaurantStateManager() {
     _initializeClient();
@@ -28,27 +32,26 @@ class RestaurantStateManager extends ChangeNotifier {
     _restaurantClient = ApiClient(basePath: customBasePathRestaurant);
     _restaurantControllerApi = RestaurantControllerApi(_restaurantClient);
     _bookingControllerApi = BookingControllerApi(_restaurantClient);
+    _formControllerApi = FormControllerApi(_restaurantClient);
   }
 
-  void setCurrentEmployee(EmployeeDTO employee) {
+  Future<void> setCurrentEmployee(EmployeeDTO employee, DateTime dateTime) async {
     _currentEmployee = employee;
-    notifyListeners(); // Notify listeners of the change
-  }
-
-  DateTime today = DateTime.now();
-  DateTime selectedDate = DateTime.now();
-
-  selectDateFromCutomCalendar(DateTime dateTime) {
-    selectedDate = dateTime;
+    _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
+    selectBookingForCurrentDay(dateTime);
     notifyListeners();
   }
 
+  Future<void> refresh(DateTime currentDateTime) async {
+    _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
+    selectBookingForCurrentDay(currentDateTime);
+    notifyListeners();
+  }
 
   List<BookingDTO>? get currentBookings => _currentBookings;
-
+  List<FormDTO>? get currentBranchForms => _currentBranchForms;
 
   Future<void> selectBookingForCurrentDay(DateTime dateTime) async {
-
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
 
     _currentBookings = await _bookingControllerApi

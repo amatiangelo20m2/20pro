@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../../api/restaurant_client/lib/api.dart';
 
 class ReservationCard extends StatelessWidget {
   final BookingDTO booking;
+  final FormDTO formDTO;
 
-  ReservationCard({required this.booking});
+  const ReservationCard({required this.booking, required this.formDTO});
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +85,12 @@ class ReservationCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(flex: 3, child: _buildCustomerInfo()),
+              Expanded(flex: 1, child: Text(formDTO.outputNameForCustomer!, style: TextStyle(fontSize: 20),)),
               Expanded(flex: 1, child: _buildGuestInfo()),
               Expanded(flex: 2, child: _buildTimeBooking(context)),
+              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.doc_plaintext),)),
+              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green,),)),
+              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.settings_solid, color: Colors.blueGrey,),)),
               Expanded(flex: 2, child: _buildStatusButton(context)),
             ],
           ),
@@ -128,12 +134,12 @@ class ReservationCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(CupertinoIcons.clock),
+        const Icon(CupertinoIcons.clock, color: Colors.blueGrey,),
         Text(
           ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: CupertinoColors.label,
+            color: Colors.blueGrey.shade900,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -164,7 +170,7 @@ class ReservationCard extends StatelessWidget {
         const SizedBox(width: 5),
         Text(
           ' ${booking.numGuests ?? 0}',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 13,
             color: CupertinoColors.label,
           ),
@@ -208,6 +214,7 @@ class ReservationCard extends StatelessWidget {
                   Text('Gestisci prenotazione di\n${booking.customer!.firstName!} ${booking.customer!.lastName!}'),
                   Text('${booking.customer!.phone!}'),
                   Text('${booking.customer!.email!}'),
+                  Text('${booking.formCode!}'),
                 ],
               ),
             ),

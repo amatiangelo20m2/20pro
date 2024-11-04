@@ -26,30 +26,28 @@ class _BookingScreenState extends State<BookingScreen> {
 
   bool _searchField = false;
 
+  String? _selectedSegment = 'TUTTI';
+
   @override
   void initState() {
     super.initState();
     _generateDays();
     _scrollController = ScrollController();
   }
-
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
-
   void _generateDays() {
     _days = List<DateTime>.generate(
       100,
           (index) => DateTime.now().add(Duration(days: index)),
     );
   }
-
-  Future<void> _onDaySelected(DateTime day,
-      RestaurantStateManager restaurantStateManager) async {
+  Future<void> _onDaySelected(DateTime day, RestaurantStateManager restaurantStateManager) async {
     final today = DateTime.now();
-    final tomorrow = DateTime.now().add(Duration(days: 1));
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
 
     setState(() {
       _selectedDate = day;
@@ -77,7 +75,6 @@ class _BookingScreenState extends State<BookingScreen> {
       fontSize: 12.0,
     );
   }
-
   void _scrollToSelectedDay() {
     final selectedIndex =
     _days.indexWhere((day) => day.isAtSameMomentAs(_selectedDate));
@@ -89,7 +86,6 @@ class _BookingScreenState extends State<BookingScreen> {
       );
     }
   }
-
   void _scrollToToday(RestaurantStateManager restaurantManager) {
     final todayIndex = _days.indexWhere(
             (day) => day.day == DateTime.now().day && day.month == DateTime.now().month && day.year == DateTime.now().year);
@@ -114,7 +110,6 @@ class _BookingScreenState extends State<BookingScreen> {
       fontSize: 12.0,
     );
   }
-
   void _scrollToTomorrow(RestaurantStateManager restaurantManager) {
     final tomorrow = DateTime.now().add(Duration(days: 1));
     final tomorrowIndex = _days.indexWhere(
@@ -140,7 +135,6 @@ class _BookingScreenState extends State<BookingScreen> {
       fontSize: 12.0,
     );
   }
-
   String capitalizeFirstLetter(String input) {
     if (input.isEmpty) {
       return input;
@@ -300,11 +294,30 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               ),
             ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),
-                ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 2, top: 2, left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),
+
+                  ),
+                  CupertinoSegmentedControl<String>(
+                    selectedColor: Colors.blueGrey.shade900,
+                    children: const {
+                      'PRANZO': Text('🌞', style: TextStyle(fontSize: 20),),
+                      'CENA': Text('🌚', style: TextStyle(fontSize: 20),),
+                      'TUTTI': Text(' TUTTI ', style: TextStyle(fontSize: 10),),
+                    },
+                    onValueChanged: (value) {
+                      setState(() {
+                        _selectedSegment = value;
+                      });
+                      Fluttertoast.showToast(msg: 'Prenotazioni $_selectedSegment');
+                    },
+                    groupValue: _selectedSegment,
+                  ),
+                ],
               ),
             ),
 
@@ -319,12 +332,20 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             Expanded(
               flex: 5,
-              child: ListView.builder(
-                padding: EdgeInsets.only(bottom: 160),
-                itemCount: restaurantManager.currentBookings!.length,
-                itemBuilder: (context, index) {
-                  return ReservationCard(booking: restaurantManager.currentBookings![index]);
+              child: RefreshIndicator(
+
+                onRefresh: () async {
+                  await restaurantManager.refresh(_selectedDate);
                 },
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 160),
+                  itemCount: restaurantManager.currentBookings!.length,
+                  itemBuilder: (context, index) {
+                    return ReservationCard(booking: restaurantManager.currentBookings![index],
+                      formDTO: restaurantManager.currentBranchForms!.where((element) => element.formCode
+                          == restaurantManager.currentBookings![index].formCode).first,);
+                  },
+                ),
               ),
             ),
 

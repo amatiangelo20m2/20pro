@@ -139,11 +139,11 @@ class _MainScreenState extends State<MainScreen> {
                       mini: _selectedIndex != 3, // Set to mini if not selected
                       backgroundColor: _selectedIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
                       foregroundColor: _selectedIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const Icon(CupertinoIcons.doc_plaintext),
+                      child: const Icon(CupertinoIcons.clock),
                     ),
                   ],
                 ),
-                SizedBox(width: 0,)
+                const SizedBox(width: 0,)
               ],
             ),
           ),

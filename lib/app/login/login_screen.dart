@@ -183,8 +183,7 @@ class _LoginPageState extends State<LoginPage> {
               .restaurantClient
               .deserializeAsync(await _decodeBodyBytes(response), 'EmployeeDTO') as EmployeeDTO;
 
-          Provider.of<RestaurantStateManager>(context, listen: false).setCurrentEmployee(employeeDTO);
-          Provider.of<RestaurantStateManager>(context, listen: false).selectBookingForCurrentDay(DateTime.now());
+          await Provider.of<RestaurantStateManager>(context, listen: false).setCurrentEmployee(employeeDTO, DateTime.now());
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const MainScreen()),
           );
