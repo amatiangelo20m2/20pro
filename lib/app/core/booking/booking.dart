@@ -28,7 +28,6 @@ class _BookingScreenState extends State<BookingScreen> {
   bool _searchField = false;
 
   String? _selectedSegmentTimeRange = 'TUTTI';
-
   bool switchValue = true;
 
   @override
@@ -255,6 +254,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                 restaurantManager.allActiveBookings!
                                     .where((element) => isSameDay(element.bookingDate!, day))
                                     .toList(),
+
                                 isSelected
                             )
                           ],
@@ -292,6 +292,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         },
                         groupValue: _selectedSegmentTimeRange,
                       ),
+                      Text(restaurantManager.currentBookingStatus.value),
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: switchValue,
@@ -305,7 +306,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
 
                             }else{
-                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.ELIMINATO);
+                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.RIFIUTATO);
                               Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
                             }
                           });

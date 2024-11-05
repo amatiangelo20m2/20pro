@@ -23,10 +23,13 @@ class RestaurantStateManager extends ChangeNotifier {
   List<FormDTO>? _currentBranchForms = [];
 
   List<BookingDTO>? _allActiveBookings = [];
+  List<BookingDTO>? _deletedBooking = [];
+  List<BookingDTO>? _toManageBookings = [];
 
   // GETTER METHODS
   RestaurantDTO? get restaurantConfiguration => _restaurantConfiguration;
   List<BookingDTO>? get allActiveBookings => _allActiveBookings;
+  List<BookingDTO>? get toManageBookings => _toManageBookings;
   ApiClient get restaurantClient => _restaurantClient;
   RestaurantControllerApi get restaurantControllerApi => _restaurantControllerApi;
   EmployeeDTO? get currentEmployee => _currentEmployee;
@@ -50,11 +53,8 @@ class RestaurantStateManager extends ChangeNotifier {
     _restaurantConfiguration = await _restaurantControllerApi.retrieveConfiguration(_currentEmployee!.branchCode!);
     _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
     selectBookingForCurrentDay(dateTime);
-    _allActiveBookings = await _bookingControllerApi
-        .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
-        BookingDTOStatusEnum.CONFERMATO.value,
-        format_yyyy_MM_dd.format(DateTime.now()),
-        format_yyyy_MM_dd.format(DateTime.now()));
+    fetchActiveBookings();
+    fetchBookingsToManage();
     notifyListeners();
   }
 
@@ -62,11 +62,8 @@ class RestaurantStateManager extends ChangeNotifier {
     _restaurantConfiguration = await _restaurantControllerApi.retrieveConfiguration(_currentEmployee!.branchCode!);
     _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
     selectBookingForCurrentDay(currentDateTime);
-    _allActiveBookings = await _bookingControllerApi
-        .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
-        BookingDTOStatusEnum.CONFERMATO.value,
-        format_yyyy_MM_dd.format(DateTime.now()),
-        format_yyyy_MM_dd.format(DateTime.now()));
+    fetchActiveBookings();
+    fetchBookingsToManage();
     notifyListeners();
   }
 
@@ -91,5 +88,23 @@ class RestaurantStateManager extends ChangeNotifier {
     return (_allActiveBookings!.where((element) =>
         isSameDay(element.bookingDate!, day))
         .toList().fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString();
+  }
+
+  Future<void> fetchActiveBookings() async {
+    _allActiveBookings = await _bookingControllerApi
+        .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
+        BookingDTOStatusEnum.CONFERMATO.value,
+        format_yyyy_MM_dd.format(DateTime.now()),
+        format_yyyy_MM_dd.format(DateTime.now()));
+    notifyListeners();
+  }
+
+  Future<void> fetchBookingsToManage() async {
+    _toManageBookings = await _bookingControllerApi
+        .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
+        BookingDTOStatusEnum.IN_ATTESA.value,
+        format_yyyy_MM_dd.format(DateTime.now()),
+        format_yyyy_MM_dd.format(DateTime.now()));
+    notifyListeners();
   }
 }

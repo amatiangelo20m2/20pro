@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:ventipro/app/core/booking/booking_fast_queue/fast_queue.dart';
+import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'booking/booking.dart';
 import 'booking/booking_to_manage/booking_to_manage.dart';
@@ -29,8 +30,11 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
 
     return Consumer<RestaurantStateManager>(
-      builder: (BuildContext context, RestaurantStateManager restaurantStateManager, Widget? child) {
+      builder: (BuildContext context,
+          RestaurantStateManager restaurantStateManager,
+          Widget? child) {
         return Scaffold(
+
           floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.blueGrey.shade900,
             child: const Icon(CupertinoIcons.add, color: Colors.white,),
@@ -76,15 +80,16 @@ class _MainScreenState extends State<MainScreen> {
                       mini: _pageIndex != 0,
                       backgroundColor: _pageIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
                       foregroundColor: _pageIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const badges.Badge(
-                        badgeStyle: badges.BadgeStyle(
+                      child: badges.Badge(
+                        badgeStyle: const badges.BadgeStyle(
                             badgeColor: Colors.green,
                         ),
                           badgeContent: Text(
-                            '1',
-                            style: TextStyle(color: Colors.white, fontSize: 10),
+                            restaurantStateManager.allActiveBookings
+                            !.where((element) => isSameDay(element.bookingDate!, DateTime.now())).length.toString(),
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
                           ),
-                          child: Icon(CupertinoIcons.calendar)
+                          child: const Icon(CupertinoIcons.calendar)
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -99,26 +104,13 @@ class _MainScreenState extends State<MainScreen> {
                       backgroundColor: _pageIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
                       foregroundColor: _pageIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
                       child: badges.Badge(
+                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.orange),
                           badgeContent: Text(
                             restaurantStateManager.allActiveBookings!.length.toString(),
-                            style: TextStyle(color: Colors.white, fontSize: 10),
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
                           ),
-                          child: Icon(CupertinoIcons.globe)
+                          child: const Icon(CupertinoIcons.globe)
                       ),
-                    ),
-                    const SizedBox(width: 15),
-                    FloatingActionButton(
-                      heroTag: "btn4",
-                      onPressed: () {
-                        setState(() {
-                          _pageIndex = 2;
-                          restaurantStateManager.updateBookingStatus(BookingDTOStatusEnum.ELIMINATO);
-                        });
-                      },
-                      mini: _pageIndex != 2, // Set to mini if not selected
-                      backgroundColor: _pageIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _pageIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const Icon(CupertinoIcons.clear_circled_solid, color: Colors.red,),
                     ),
                     const SizedBox(width: 15),
                     FloatingActionButton(
@@ -132,8 +124,9 @@ class _MainScreenState extends State<MainScreen> {
                       backgroundColor: _pageIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
                       foregroundColor: _pageIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
                       child: const badges.Badge(
+                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
                           badgeContent: Text(
-                            '1',
+                            'F',
                             style: TextStyle(color: Colors.white, fontSize: 10),
                           ),
                           child: Icon(CupertinoIcons.clock)

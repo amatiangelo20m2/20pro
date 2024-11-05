@@ -195,7 +195,7 @@ class ReservationCard extends StatelessWidget {
         return CupertinoColors.activeGreen;
       case 'inattesa':
         return CupertinoColors.systemYellow;
-      case 'cancellato':
+      case 'rifiutato':
         return CupertinoColors.destructiveRed;
       default:
         return CupertinoColors.systemGrey;
