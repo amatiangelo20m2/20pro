@@ -15,6 +15,9 @@ class RestaurantDTO {
   RestaurantDTO({
     this.branchCode,
     this.creationDate,
+    this.daylyTimeWorkingRange,
+    this.nightTimeWorkingRange,
+    this.capacity,
   });
 
   ///
@@ -33,19 +36,49 @@ class RestaurantDTO {
   ///
   DateTime? creationDate;
 
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  TimeRange? daylyTimeWorkingRange;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  TimeRange? nightTimeWorkingRange;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  int? capacity;
+
   @override
   bool operator ==(Object other) => identical(this, other) || other is RestaurantDTO &&
     other.branchCode == branchCode &&
-    other.creationDate == creationDate;
+    other.creationDate == creationDate &&
+    other.daylyTimeWorkingRange == daylyTimeWorkingRange &&
+    other.nightTimeWorkingRange == nightTimeWorkingRange &&
+    other.capacity == capacity;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
     (branchCode == null ? 0 : branchCode!.hashCode) +
-    (creationDate == null ? 0 : creationDate!.hashCode);
+    (creationDate == null ? 0 : creationDate!.hashCode) +
+    (daylyTimeWorkingRange == null ? 0 : daylyTimeWorkingRange!.hashCode) +
+    (nightTimeWorkingRange == null ? 0 : nightTimeWorkingRange!.hashCode) +
+    (capacity == null ? 0 : capacity!.hashCode);
 
   @override
-  String toString() => 'RestaurantDTO[branchCode=$branchCode, creationDate=$creationDate]';
+  String toString() => 'RestaurantDTO[branchCode=$branchCode, creationDate=$creationDate, daylyTimeWorkingRange=$daylyTimeWorkingRange, nightTimeWorkingRange=$nightTimeWorkingRange, capacity=$capacity]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -58,6 +91,21 @@ class RestaurantDTO {
       json[r'creationDate'] = this.creationDate!.toUtc().toIso8601String();
     } else {
       json[r'creationDate'] = null;
+    }
+    if (this.daylyTimeWorkingRange != null) {
+      json[r'daylyTimeWorkingRange'] = this.daylyTimeWorkingRange;
+    } else {
+      json[r'daylyTimeWorkingRange'] = null;
+    }
+    if (this.nightTimeWorkingRange != null) {
+      json[r'nightTimeWorkingRange'] = this.nightTimeWorkingRange;
+    } else {
+      json[r'nightTimeWorkingRange'] = null;
+    }
+    if (this.capacity != null) {
+      json[r'capacity'] = this.capacity;
+    } else {
+      json[r'capacity'] = null;
     }
     return json;
   }
@@ -83,6 +131,9 @@ class RestaurantDTO {
       return RestaurantDTO(
         branchCode: mapValueOfType<String>(json, r'branchCode'),
         creationDate: mapDateTime(json, r'creationDate', r''),
+        daylyTimeWorkingRange: TimeRange.fromJson(json[r'daylyTimeWorkingRange']),
+        nightTimeWorkingRange: TimeRange.fromJson(json[r'nightTimeWorkingRange']),
+        capacity: mapValueOfType<int>(json, r'capacity'),
       );
     }
     return null;

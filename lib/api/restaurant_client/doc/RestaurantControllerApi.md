@@ -5,7 +5,7 @@
 import 'package:ventimetri_api_restaurant/api.dart';
 ```
 
-All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
+All URIs are relative to *http://192.168.1.4:22297/restaurantservice*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -24,6 +24,7 @@ Method | HTTP request | Description
 [**loginFromMobileDevice**](RestaurantControllerApi.md#loginfrommobiledevice) | **POST** /api/restaurant/employee/mobiledevice/login/{branchCode} | 
 [**retrieveConfiguration**](RestaurantControllerApi.md#retrieveconfiguration) | **POST** /api/restaurant/restaurant/retrieveconfiguration/{branchCode} | 
 [**retrieveReports**](RestaurantControllerApi.md#retrievereports) | **GET** /api/restaurant/retrievereports/{branchCode} | 
+[**updateConfiguration**](RestaurantControllerApi.md#updateconfiguration) | **PUT** /api/restaurant/restaurant/updateconfiguration | 
 [**updateEmployee**](RestaurantControllerApi.md#updateemployee) | **PUT** /api/restaurant/employee/update/{branchCode} | 
 
 
@@ -644,6 +645,47 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **updateConfiguration**
+> RestaurantDTO updateConfiguration(restaurantDTO)
+
+
+
+### Example
+```dart
+import 'package:ventimetri_api_restaurant/api.dart';
+
+final api_instance = RestaurantControllerApi();
+final restaurantDTO = RestaurantDTO(); // RestaurantDTO | 
+
+try {
+    final result = api_instance.updateConfiguration(restaurantDTO);
+    print(result);
+} catch (e) {
+    print('Exception when calling RestaurantControllerApi->updateConfiguration: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **restaurantDTO** | [**RestaurantDTO**](RestaurantDTO.md)|  | 
+
+### Return type
+
+[**RestaurantDTO**](RestaurantDTO.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: */*
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

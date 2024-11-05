@@ -5,7 +5,7 @@
 import 'package:ventimetri_api_restaurant/api.dart';
 ```
 
-All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
+All URIs are relative to *http://192.168.1.4:22297/restaurantservice*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -16,6 +16,7 @@ Method | HTTP request | Description
 [**findBookingByCustomerPrefixAndPhone**](BookingControllerApi.md#findbookingbycustomerprefixandphone) | **GET** /api/booking/retrievebyphone/{prefix}/{phone} | 
 [**findBookingByFormCode**](BookingControllerApi.md#findbookingbyformcode) | **GET** /api/booking/retrievebyformcode/{formCode} | 
 [**retrieveBookingByBranchCodeAndDate**](BookingControllerApi.md#retrievebookingbybranchcodeanddate) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{date} | 
+[**retrieveBookingByStatusAndBranchCode**](BookingControllerApi.md#retrievebookingbystatusandbranchcode) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{bookingStatus}/{fromDate}/{toDate} | 
 [**retrieveHistoricalCustomersBasedOnReservationsByBranchCode**](BookingControllerApi.md#retrievehistoricalcustomersbasedonreservationsbybranchcode) | **GET** /api/booking/retrievehistoricalcustomers/bybookingson/{branchCode} | 
 [**updateBooking**](BookingControllerApi.md#updatebooking) | **PUT** /api/booking/updatebooking | 
 
@@ -294,6 +295,53 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **branchCode** | **String**|  | 
  **date** | **String**|  | 
+
+### Return type
+
+[**List<BookingDTO>**](BookingDTO.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: */*
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **retrieveBookingByStatusAndBranchCode**
+> List<BookingDTO> retrieveBookingByStatusAndBranchCode(branchCode, bookingStatus, fromDate, toDate)
+
+
+
+### Example
+```dart
+import 'package:ventimetri_api_restaurant/api.dart';
+
+final api_instance = BookingControllerApi();
+final branchCode = branchCode_example; // String | 
+final bookingStatus = bookingStatus_example; // String | 
+final fromDate = fromDate_example; // String | 
+final toDate = toDate_example; // String | 
+
+try {
+    final result = api_instance.retrieveBookingByStatusAndBranchCode(branchCode, bookingStatus, fromDate, toDate);
+    print(result);
+} catch (e) {
+    print('Exception when calling BookingControllerApi->retrieveBookingByStatusAndBranchCode: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **branchCode** | **String**|  | 
+ **bookingStatus** | **String**|  | 
+ **fromDate** | **String**|  | 
+ **toDate** | **String**|  | 
 
 ### Return type
 

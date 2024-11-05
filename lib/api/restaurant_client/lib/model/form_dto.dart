@@ -28,8 +28,6 @@ class FormDTO {
     this.regularOpeningHours = const [],
     this.specialDays = const [],
     this.holidays = const [],
-    this.daylyTimeWorkingRange,
-    this.nightTimeWorkingRange,
     this.cutterTimeForRanges,
     this.maxGuests,
     this.maxTableGuestNumber,
@@ -126,22 +124,6 @@ class FormDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  TimeRange? daylyTimeWorkingRange;
-
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  TimeRange? nightTimeWorkingRange;
-
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
   int? cutterTimeForRanges;
 
   ///
@@ -185,8 +167,6 @@ class FormDTO {
     _deepEquality.equals(other.regularOpeningHours, regularOpeningHours) &&
     _deepEquality.equals(other.specialDays, specialDays) &&
     _deepEquality.equals(other.holidays, holidays) &&
-    other.daylyTimeWorkingRange == daylyTimeWorkingRange &&
-    other.nightTimeWorkingRange == nightTimeWorkingRange &&
     other.cutterTimeForRanges == cutterTimeForRanges &&
     other.maxGuests == maxGuests &&
     other.maxTableGuestNumber == maxTableGuestNumber &&
@@ -210,15 +190,13 @@ class FormDTO {
     (regularOpeningHours.hashCode) +
     (specialDays.hashCode) +
     (holidays.hashCode) +
-    (daylyTimeWorkingRange == null ? 0 : daylyTimeWorkingRange!.hashCode) +
-    (nightTimeWorkingRange == null ? 0 : nightTimeWorkingRange!.hashCode) +
     (cutterTimeForRanges == null ? 0 : cutterTimeForRanges!.hashCode) +
     (maxGuests == null ? 0 : maxGuests!.hashCode) +
     (maxTableGuestNumber == null ? 0 : maxTableGuestNumber!.hashCode) +
     (dogsAreAccepted == null ? 0 : dogsAreAccepted!.hashCode);
 
   @override
-  String toString() => 'FormDTO[formId=$formId, formCode=$formCode, formName=$formName, outputNameForCustomer=$outputNameForCustomer, branchCode=$branchCode, branchName=$branchName, branchAddress=$branchAddress, redirectPage=$redirectPage, creationDate=$creationDate, formType=$formType, formStatus=$formStatus, logo=$logo, regularOpeningHours=$regularOpeningHours, specialDays=$specialDays, holidays=$holidays, daylyTimeWorkingRange=$daylyTimeWorkingRange, nightTimeWorkingRange=$nightTimeWorkingRange, cutterTimeForRanges=$cutterTimeForRanges, maxGuests=$maxGuests, maxTableGuestNumber=$maxTableGuestNumber, dogsAreAccepted=$dogsAreAccepted]';
+  String toString() => 'FormDTO[formId=$formId, formCode=$formCode, formName=$formName, outputNameForCustomer=$outputNameForCustomer, branchCode=$branchCode, branchName=$branchName, branchAddress=$branchAddress, redirectPage=$redirectPage, creationDate=$creationDate, formType=$formType, formStatus=$formStatus, logo=$logo, regularOpeningHours=$regularOpeningHours, specialDays=$specialDays, holidays=$holidays, cutterTimeForRanges=$cutterTimeForRanges, maxGuests=$maxGuests, maxTableGuestNumber=$maxTableGuestNumber, dogsAreAccepted=$dogsAreAccepted]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -281,16 +259,6 @@ class FormDTO {
       json[r'regularOpeningHours'] = this.regularOpeningHours;
       json[r'specialDays'] = this.specialDays;
       json[r'holidays'] = this.holidays;
-    if (this.daylyTimeWorkingRange != null) {
-      json[r'daylyTimeWorkingRange'] = this.daylyTimeWorkingRange;
-    } else {
-      json[r'daylyTimeWorkingRange'] = null;
-    }
-    if (this.nightTimeWorkingRange != null) {
-      json[r'nightTimeWorkingRange'] = this.nightTimeWorkingRange;
-    } else {
-      json[r'nightTimeWorkingRange'] = null;
-    }
     if (this.cutterTimeForRanges != null) {
       json[r'cutterTimeForRanges'] = this.cutterTimeForRanges;
     } else {
@@ -350,8 +318,6 @@ class FormDTO {
         regularOpeningHours: OpeningHoursDTO.listFromJson(json[r'regularOpeningHours']),
         specialDays: SpecialDayDTO.listFromJson(json[r'specialDays']),
         holidays: HolidaysDTO.listFromJson(json[r'holidays']),
-        daylyTimeWorkingRange: TimeRange.fromJson(json[r'daylyTimeWorkingRange']),
-        nightTimeWorkingRange: TimeRange.fromJson(json[r'nightTimeWorkingRange']),
         cutterTimeForRanges: mapValueOfType<int>(json, r'cutterTimeForRanges'),
         maxGuests: mapValueOfType<int>(json, r'maxGuests'),
         maxTableGuestNumber: mapValueOfType<int>(json, r'maxTableGuestNumber'),

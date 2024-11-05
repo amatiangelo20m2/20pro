@@ -293,17 +293,21 @@ class BookingDTOStatusEnum {
 
   String toJson() => value;
 
-  static const PENDING = BookingDTOStatusEnum._(r'PENDING');
-  static const CONFIRMED = BookingDTOStatusEnum._(r'CONFIRMED');
-  static const REFUSED = BookingDTOStatusEnum._(r'REFUSED');
-  static const CANCELLED = BookingDTOStatusEnum._(r'CANCELLED');
+  static const IN_ATTESA = BookingDTOStatusEnum._(r'IN_ATTESA');
+  static const CONFERMATO = BookingDTOStatusEnum._(r'CONFERMATO');
+  static const ARRIVATO = BookingDTOStatusEnum._(r'ARRIVATO');
+  static const NON_ARRIVATO = BookingDTOStatusEnum._(r'NON_ARRIVATO');
+  static const RIFIUTATO = BookingDTOStatusEnum._(r'RIFIUTATO');
+  static const ELIMINATO = BookingDTOStatusEnum._(r'ELIMINATO');
 
   /// List of all possible values in this [enum][BookingDTOStatusEnum].
   static const values = <BookingDTOStatusEnum>[
-    PENDING,
-    CONFIRMED,
-    REFUSED,
-    CANCELLED,
+    IN_ATTESA,
+    CONFERMATO,
+    ARRIVATO,
+    NON_ARRIVATO,
+    RIFIUTATO,
+    ELIMINATO,
   ];
 
   static BookingDTOStatusEnum? fromJson(dynamic value) => BookingDTOStatusEnumTypeTransformer().decode(value);
@@ -342,10 +346,12 @@ class BookingDTOStatusEnumTypeTransformer {
   BookingDTOStatusEnum? decode(dynamic data, {bool allowNull = true}) {
     if (data != null) {
       switch (data) {
-        case r'PENDING': return BookingDTOStatusEnum.PENDING;
-        case r'CONFIRMED': return BookingDTOStatusEnum.CONFIRMED;
-        case r'REFUSED': return BookingDTOStatusEnum.REFUSED;
-        case r'CANCELLED': return BookingDTOStatusEnum.CANCELLED;
+        case r'IN_ATTESA': return BookingDTOStatusEnum.IN_ATTESA;
+        case r'CONFERMATO': return BookingDTOStatusEnum.CONFERMATO;
+        case r'ARRIVATO': return BookingDTOStatusEnum.ARRIVATO;
+        case r'NON_ARRIVATO': return BookingDTOStatusEnum.NON_ARRIVATO;
+        case r'RIFIUTATO': return BookingDTOStatusEnum.RIFIUTATO;
+        case r'ELIMINATO': return BookingDTOStatusEnum.ELIMINATO;
         default:
           if (!allowNull) {
             throw ArgumentError('Unknown enum value to decode: $data');

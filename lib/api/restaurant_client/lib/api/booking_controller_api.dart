@@ -368,6 +368,72 @@ class BookingControllerApi {
     return null;
   }
 
+  /// Performs an HTTP 'GET /api/booking/retrievebynranchcode/{branchCode}/{bookingStatus}/{fromDate}/{toDate}' operation and returns the [Response].
+  /// Parameters:
+  ///
+  /// * [String] branchCode (required):
+  ///
+  /// * [String] bookingStatus (required):
+  ///
+  /// * [String] fromDate (required):
+  ///
+  /// * [String] toDate (required):
+  Future<Response> retrieveBookingByStatusAndBranchCodeWithHttpInfo(String branchCode, String bookingStatus, String fromDate, String toDate,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/booking/retrievebynranchcode/{branchCode}/{bookingStatus}/{fromDate}/{toDate}'
+      .replaceAll('{branchCode}', branchCode)
+      .replaceAll('{bookingStatus}', bookingStatus)
+      .replaceAll('{fromDate}', fromDate)
+      .replaceAll('{toDate}', toDate);
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>[];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'GET',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Parameters:
+  ///
+  /// * [String] branchCode (required):
+  ///
+  /// * [String] bookingStatus (required):
+  ///
+  /// * [String] fromDate (required):
+  ///
+  /// * [String] toDate (required):
+  Future<List<BookingDTO>?> retrieveBookingByStatusAndBranchCode(String branchCode, String bookingStatus, String fromDate, String toDate,) async {
+    final response = await retrieveBookingByStatusAndBranchCodeWithHttpInfo(branchCode, bookingStatus, fromDate, toDate,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      final responseBody = await _decodeBodyBytes(response);
+      return (await apiClient.deserializeAsync(responseBody, 'List<BookingDTO>') as List)
+        .cast<BookingDTO>()
+        .toList(growable: false);
+
+    }
+    return null;
+  }
+
   /// Performs an HTTP 'GET /api/booking/retrievehistoricalcustomers/bybookingson/{branchCode}' operation and returns the [Response].
   /// Parameters:
   ///

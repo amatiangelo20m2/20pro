@@ -8,7 +8,8 @@ class ReservationCard extends StatelessWidget {
   final BookingDTO booking;
   final FormDTO formDTO;
 
-  const ReservationCard({required this.booking, required this.formDTO});
+  const ReservationCard({required this.booking,
+    required this.formDTO});
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +45,13 @@ class ReservationCard extends StatelessWidget {
 
   Future<bool?> _confirmReservation(BuildContext context) async {
 
-    booking.status = BookingDTOStatusEnum.CONFIRMED;
+    booking.status = BookingDTOStatusEnum.CONFERMATO;
     _showSnackbar(context, 'Reservation confirmed.');
     return false; // Prevent automatic dismissal
   }
 
   Future<bool?> _cancelReservation(BuildContext context) async {
-    booking.status = BookingDTOStatusEnum.CANCELLED;
+    booking.status = BookingDTOStatusEnum.ELIMINATO;
     _showSnackbar(context, 'Reservation cancelled.');
     return false; // Prevent automatic dismissal
   }
@@ -190,11 +191,11 @@ class ReservationCard extends StatelessWidget {
 
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
-      case 'confirmed':
+      case 'confermato':
         return CupertinoColors.activeGreen;
-      case 'pending':
+      case 'inattesa':
         return CupertinoColors.systemYellow;
-      case 'cancelled':
+      case 'cancellato':
         return CupertinoColors.destructiveRed;
       default:
         return CupertinoColors.systemGrey;
@@ -212,9 +213,9 @@ class ReservationCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text('Gestisci prenotazione di\n${booking.customer!.firstName!} ${booking.customer!.lastName!}'),
-                  Text('${booking.customer!.phone!}'),
-                  Text('${booking.customer!.email!}'),
-                  Text('${booking.formCode!}'),
+                  Text(booking.customer!.phone!),
+                  Text(booking.customer!.email!),
+                  Text(booking.formCode!),
                 ],
               ),
             ),

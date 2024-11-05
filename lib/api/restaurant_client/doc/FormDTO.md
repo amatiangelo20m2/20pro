@@ -23,8 +23,6 @@ Name | Type | Description | Notes
 **regularOpeningHours** | [**List<OpeningHoursDTO>**](OpeningHoursDTO.md) |  | [optional] [default to const []]
 **specialDays** | [**List<SpecialDayDTO>**](SpecialDayDTO.md) |  | [optional] [default to const []]
 **holidays** | [**List<HolidaysDTO>**](HolidaysDTO.md) |  | [optional] [default to const []]
-**daylyTimeWorkingRange** | [**TimeRange**](TimeRange.md) |  | [optional] 
-**nightTimeWorkingRange** | [**TimeRange**](TimeRange.md) |  | [optional] 
 **cutterTimeForRanges** | **int** |  | [optional] 
 **maxGuests** | **int** |  | [optional] 
 **maxTableGuestNumber** | **int** |  | [optional] 

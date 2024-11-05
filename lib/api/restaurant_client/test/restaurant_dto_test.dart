@@ -26,6 +26,21 @@ void main() {
       // TODO
     });
 
+    // TimeRange daylyTimeWorkingRange
+    test('to test the property `daylyTimeWorkingRange`', () async {
+      // TODO
+    });
+
+    // TimeRange nightTimeWorkingRange
+    test('to test the property `nightTimeWorkingRange`', () async {
+      // TODO
+    });
+
+    // int capacity
+    test('to test the property `capacity`', () async {
+      // TODO
+    });
+
 
   });
 

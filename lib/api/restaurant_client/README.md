@@ -54,7 +54,7 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://192.168.1.4:13643/restaurantservice*
+All URIs are relative to *http://192.168.1.4:22297/restaurantservice*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
@@ -65,6 +65,7 @@ Class | Method | HTTP request | Description
 *BookingControllerApi* | [**findBookingByCustomerPrefixAndPhone**](doc//BookingControllerApi.md#findbookingbycustomerprefixandphone) | **GET** /api/booking/retrievebyphone/{prefix}/{phone} | 
 *BookingControllerApi* | [**findBookingByFormCode**](doc//BookingControllerApi.md#findbookingbyformcode) | **GET** /api/booking/retrievebyformcode/{formCode} | 
 *BookingControllerApi* | [**retrieveBookingByBranchCodeAndDate**](doc//BookingControllerApi.md#retrievebookingbybranchcodeanddate) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{date} | 
+*BookingControllerApi* | [**retrieveBookingByStatusAndBranchCode**](doc//BookingControllerApi.md#retrievebookingbystatusandbranchcode) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{bookingStatus}/{fromDate}/{toDate} | 
 *BookingControllerApi* | [**retrieveHistoricalCustomersBasedOnReservationsByBranchCode**](doc//BookingControllerApi.md#retrievehistoricalcustomersbasedonreservationsbybranchcode) | **GET** /api/booking/retrievehistoricalcustomers/bybookingson/{branchCode} | 
 *BookingControllerApi* | [**updateBooking**](doc//BookingControllerApi.md#updatebooking) | **PUT** /api/booking/updatebooking | 
 *CustomerControllerApi* | [**findcustomerByPhoneAndPrefix**](doc//CustomerControllerApi.md#findcustomerbyphoneandprefix) | **GET** /api/customer/retrieve/{prefix}/{phoneNumber} | 
@@ -99,6 +100,7 @@ Class | Method | HTTP request | Description
 *RestaurantControllerApi* | [**loginFromMobileDevice**](doc//RestaurantControllerApi.md#loginfrommobiledevice) | **POST** /api/restaurant/employee/mobiledevice/login/{branchCode} | 
 *RestaurantControllerApi* | [**retrieveConfiguration**](doc//RestaurantControllerApi.md#retrieveconfiguration) | **POST** /api/restaurant/restaurant/retrieveconfiguration/{branchCode} | 
 *RestaurantControllerApi* | [**retrieveReports**](doc//RestaurantControllerApi.md#retrievereports) | **GET** /api/restaurant/retrievereports/{branchCode} | 
+*RestaurantControllerApi* | [**updateConfiguration**](doc//RestaurantControllerApi.md#updateconfiguration) | **PUT** /api/restaurant/restaurant/updateconfiguration | 
 *RestaurantControllerApi* | [**updateEmployee**](doc//RestaurantControllerApi.md#updateemployee) | **PUT** /api/restaurant/employee/update/{branchCode} | 
 
 

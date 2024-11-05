@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ventipro/app/core/restaurant/booking.dart';
+import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:badges/badges.dart' as badges;
-import 'customer/customer_screen.dart';
-import 'employee/reports/report_employee_presence.dart';
+import 'package:ventipro/app/core/booking/booking_fast_queue/fast_queue.dart';
+import 'package:ventipro/state_manager/restaurant_state_manager.dart';
+import 'booking/booking.dart';
+import 'booking/booking_to_manage/booking_to_manage.dart';
 import 'notification/notification_screen.dart';
-import 'notification/model/notification_entity.dart';
 import 'notification/state_manager/notification_state_manager.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,40 +22,25 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  // Index of the currently selected button
-  int _selectedIndex = 0;
 
-
-  final List<Widget> _screens = [
-    const BookingScreen(),
-    const CustomerScreen(),
-    const Center(child: Text('Shopping Screen')),
-    const ReportEmployeePresence()
-  ];
+  int _pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NotificationStateManager>(
-      builder: (BuildContext context, NotificationStateManager value, Widget? child) {
+
+    return Consumer<RestaurantStateManager>(
+      builder: (BuildContext context, RestaurantStateManager restaurantStateManager, Widget? child) {
         return Scaffold(
-          floatingActionButton: _selectedIndex == 0 ?  FloatingActionButton(
+          floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.blueGrey.shade900,
             child: const Icon(CupertinoIcons.add, color: Colors.white,),
             onPressed: () {
-            value.addNotification(
-              NotificationModel(
-                title: 'New Notification',
-                body: 'This is a test notification',
-                dateReceived: DateTime.now().toIso8601String(),
-              ),
-            );
-          },) : null,
+          },),
           drawer: Drawer(),
           appBar: AppBar(
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             actions: [
-
               Consumer<NotificationStateManager>(
                 builder: (BuildContext context, NotificationStateManager value, Widget? child) {
                   return IconButton(onPressed: () {
@@ -72,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
                 Row(
                   children: [
                     Image.asset('assets/images/logo.png', width: 25),
-                    Text('20PRO'),
+                    const Text('20PRO'),
                   ],
                 ),
                 Row(
@@ -82,65 +69,78 @@ class _MainScreenState extends State<MainScreen> {
                       heroTag: "btn1",
                       onPressed: () {
                         setState(() {
-                          _selectedIndex = 0; // Set index for Calendar Screen
+                          _pageIndex = 0;
+                          restaurantStateManager.updateBookingStatus(BookingDTOStatusEnum.CONFERMATO);
                         });
                       },
-                      mini: _selectedIndex != 0, // Set to mini if not selected
-                      backgroundColor: _selectedIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _selectedIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
+                      mini: _pageIndex != 0,
+                      backgroundColor: _pageIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _pageIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
                       child: const badges.Badge(
+                        badgeStyle: badges.BadgeStyle(
+                            badgeColor: Colors.green,
+                        ),
                           badgeContent: Text(
                             '1',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white, fontSize: 10),
                           ),
                           child: Icon(CupertinoIcons.calendar)
                       ),
                     ),
-                    const SizedBox(width: 15), // Space between buttons
+                    const SizedBox(width: 15),
                     FloatingActionButton(
                       heroTag: "btn2",
                       onPressed: () {
                         setState(() {
-                          _selectedIndex = 1; // Set index for People Screen
+                          _pageIndex = 1;
                         });
                       },
-                      mini: _selectedIndex != 1, // Set to mini if not selected
-                      backgroundColor: _selectedIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _selectedIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const badges.Badge(
+                      mini: _pageIndex != 1, // Set to mini if not selected
+                      backgroundColor: _pageIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _pageIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: badges.Badge(
                           badgeContent: Text(
-                            '3',
-                            style: TextStyle(color: Colors.white),
+                            restaurantStateManager.allActiveBookings!.length.toString(),
+                            style: TextStyle(color: Colors.white, fontSize: 10),
                           ),
                           child: Icon(CupertinoIcons.globe)
                       ),
                     ),
                     const SizedBox(width: 15),
                     FloatingActionButton(
-                      heroTag: "btn3",
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 2; // Set index for Shopping Screen
-                        });
-                      },
-                      mini: _selectedIndex != 2, // Set to mini if not selected
-                      backgroundColor: _selectedIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _selectedIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const Icon(CupertinoIcons.clear),
-                    ),
-                    const SizedBox(width: 15),
-                    FloatingActionButton(
                       heroTag: "btn4",
                       onPressed: () {
                         setState(() {
-                          _selectedIndex = 3; // Set index for Shopping Screen
+                          _pageIndex = 2;
+                          restaurantStateManager.updateBookingStatus(BookingDTOStatusEnum.ELIMINATO);
                         });
                       },
-                      mini: _selectedIndex != 3, // Set to mini if not selected
-                      backgroundColor: _selectedIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _selectedIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const Icon(CupertinoIcons.clock),
+                      mini: _pageIndex != 2, // Set to mini if not selected
+                      backgroundColor: _pageIndex == 2 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _pageIndex == 2 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const Icon(CupertinoIcons.clear_circled_solid, color: Colors.red,),
                     ),
+                    const SizedBox(width: 15),
+                    FloatingActionButton(
+                      heroTag: "btn2",
+                      onPressed: () {
+                        setState(() {
+                          _pageIndex = 3;
+                        });
+                      },
+                      mini: _pageIndex != 3, // Set to mini if not selected
+                      backgroundColor: _pageIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
+                      foregroundColor: _pageIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
+                      child: const badges.Badge(
+                          badgeContent: Text(
+                            '1',
+                            style: TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                          child: Icon(CupertinoIcons.clock)
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+
                   ],
                 ),
                 const SizedBox(width: 0,)
@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
           body: Stack(
             children: [
               // Display the selected screen based on button index
-              _screens[_selectedIndex],
+              getPageByIndex(_pageIndex),
               Positioned(
                 bottom: 30, // Position from the bottom
                 left: 0,
@@ -164,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Powerade by ', style: TextStyle(fontSize: 6),),
+                          const Text('Powerade by ', style: TextStyle(fontSize: 6),),
                           Image.asset('assets/images/logo-black.png', width: 15),
                         ],
                       ),
@@ -178,5 +178,20 @@ class _MainScreenState extends State<MainScreen> {
         );
       },
     );
+  }
+
+  getPageByIndex(int pageIndex) {
+
+    switch(pageIndex){
+      case 0:
+        return const BookingScreen();
+      case 1:
+        return const BookingManager();
+      case 2:
+        return const BookingScreen();
+      case 3:
+        return const FastQueue();
+
+    }
   }
 }

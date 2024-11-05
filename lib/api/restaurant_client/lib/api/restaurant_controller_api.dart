@@ -750,6 +750,53 @@ class RestaurantControllerApi {
     return null;
   }
 
+  /// Performs an HTTP 'PUT /api/restaurant/restaurant/updateconfiguration' operation and returns the [Response].
+  /// Parameters:
+  ///
+  /// * [RestaurantDTO] restaurantDTO (required):
+  Future<Response> updateConfigurationWithHttpInfo(RestaurantDTO restaurantDTO,) async {
+    // ignore: prefer_const_declarations
+    final path = r'/api/restaurant/restaurant/updateconfiguration';
+
+    // ignore: prefer_final_locals
+    Object? postBody = restaurantDTO;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    const contentTypes = <String>['application/json'];
+
+
+    return apiClient.invokeAPI(
+      path,
+      'PUT',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// Parameters:
+  ///
+  /// * [RestaurantDTO] restaurantDTO (required):
+  Future<RestaurantDTO?> updateConfiguration(RestaurantDTO restaurantDTO,) async {
+    final response = await updateConfigurationWithHttpInfo(restaurantDTO,);
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+    // When a remote server returns no body with a status of 204, we shall not decode it.
+    // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
+    // FormatException when trying to decode an empty string.
+    if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'RestaurantDTO',) as RestaurantDTO;
+    
+    }
+    return null;
+  }
+
   /// Performs an HTTP 'PUT /api/restaurant/employee/update/{branchCode}' operation and returns the [Response].
   /// Parameters:
   ///

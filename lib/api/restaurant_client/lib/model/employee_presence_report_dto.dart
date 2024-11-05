@@ -21,8 +21,8 @@ class EmployeePresenceReportDTO {
     this.note,
     this.illness,
     this.presentAtLunch,
-    this.holiday,
     this.presentAtDinner,
+    this.holiday,
     this.rest,
   });
 
@@ -96,7 +96,7 @@ class EmployeePresenceReportDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  bool? holiday;
+  bool? presentAtDinner;
 
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -104,7 +104,7 @@ class EmployeePresenceReportDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  bool? presentAtDinner;
+  bool? holiday;
 
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -124,8 +124,8 @@ class EmployeePresenceReportDTO {
     other.note == note &&
     other.illness == illness &&
     other.presentAtLunch == presentAtLunch &&
-    other.holiday == holiday &&
     other.presentAtDinner == presentAtDinner &&
+    other.holiday == holiday &&
     other.rest == rest;
 
   @override
@@ -139,12 +139,12 @@ class EmployeePresenceReportDTO {
     (note == null ? 0 : note!.hashCode) +
     (illness == null ? 0 : illness!.hashCode) +
     (presentAtLunch == null ? 0 : presentAtLunch!.hashCode) +
-    (holiday == null ? 0 : holiday!.hashCode) +
     (presentAtDinner == null ? 0 : presentAtDinner!.hashCode) +
+    (holiday == null ? 0 : holiday!.hashCode) +
     (rest == null ? 0 : rest!.hashCode);
 
   @override
-  String toString() => 'EmployeePresenceReportDTO[reportId=$reportId, branchCode=$branchCode, employee=$employee, date=$date, workedHours=$workedHours, note=$note, illness=$illness, presentAtLunch=$presentAtLunch, holiday=$holiday, presentAtDinner=$presentAtDinner, rest=$rest]';
+  String toString() => 'EmployeePresenceReportDTO[reportId=$reportId, branchCode=$branchCode, employee=$employee, date=$date, workedHours=$workedHours, note=$note, illness=$illness, presentAtLunch=$presentAtLunch, presentAtDinner=$presentAtDinner, holiday=$holiday, rest=$rest]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -188,15 +188,15 @@ class EmployeePresenceReportDTO {
     } else {
       json[r'presentAtLunch'] = null;
     }
-    if (this.holiday != null) {
-      json[r'holiday'] = this.holiday;
-    } else {
-      json[r'holiday'] = null;
-    }
     if (this.presentAtDinner != null) {
       json[r'presentAtDinner'] = this.presentAtDinner;
     } else {
       json[r'presentAtDinner'] = null;
+    }
+    if (this.holiday != null) {
+      json[r'holiday'] = this.holiday;
+    } else {
+      json[r'holiday'] = null;
     }
     if (this.rest != null) {
       json[r'rest'] = this.rest;
@@ -233,8 +233,8 @@ class EmployeePresenceReportDTO {
         note: mapValueOfType<String>(json, r'note'),
         illness: mapValueOfType<bool>(json, r'illness'),
         presentAtLunch: mapValueOfType<bool>(json, r'presentAtLunch'),
-        holiday: mapValueOfType<bool>(json, r'holiday'),
         presentAtDinner: mapValueOfType<bool>(json, r'presentAtDinner'),
+        holiday: mapValueOfType<bool>(json, r'holiday'),
         rest: mapValueOfType<bool>(json, r'rest'),
       );
     }

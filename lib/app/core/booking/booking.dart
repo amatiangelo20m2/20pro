@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
 import '../../../global/style.dart';
@@ -26,7 +27,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   bool _searchField = false;
 
-  String? _selectedSegment = 'TUTTI';
+  String? _selectedSegmentTimeRange = 'TUTTI';
+
+  bool switchValue = true;
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
   void _generateDays() {
     _days = List<DateTime>.generate(
-      100,
+      30,
           (index) => DateTime.now().add(Duration(days: index)),
     );
   }
@@ -161,7 +164,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       },
                       child: Text('Oggi', style: TextStyle(fontWeight: FontWeight.bold, color: isTodaySelected ? Colors.blueGrey.shade900 : Colors.grey),),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     TextButton(
                       onPressed: () {
                         Vibration.vibrate(duration: 1000);
@@ -240,52 +243,20 @@ class _BookingScreenState extends State<BookingScreen> {
                                   color:
                                   isSelected ? Colors.white : Colors.black),
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 1),
                             Text(
                               '${day.day}',
                               style: TextStyle(
                                   color:
-                                  isSelected ? Colors.white : Colors.black),
+                                  isSelected ? Colors.white : Colors.black, fontSize: 20),
                             ),
                             const SizedBox(height: 2),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.table_bar_outlined, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
-
-                                Text(
-                                  '20 Tavoli',
-                                  style: TextStyle(
-                                      fontSize: 7,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.people_outline, size: 9, color: isSelected ? Colors.white : Colors.grey.shade700,),
-
-                                Text(
-                                  '100 Persone',
-                                  style: TextStyle(
-                                      fontSize: 7,
-                                      fontWeight: isSelected
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                              ],
-                            ),
-
+                            _buildCurrentDaySituationWidget(
+                                restaurantManager.allActiveBookings!
+                                    .where((element) => isSameDay(element.bookingDate!, day))
+                                    .toList(),
+                                isSelected
+                            )
                           ],
                         ),
                       ),
@@ -299,28 +270,52 @@ class _BookingScreenState extends State<BookingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),
+                  Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),),
+                  Row(
+                    children: [
+                      Text(restaurantManager
+                          .retrieveTotalGuestsNumberForDayAndActiveBookings(_selectedDate)
+                          + '/'
+                          + restaurantManager.restaurantConfiguration!.capacity.toString()),
+                      CupertinoSegmentedControl<String>(
+                        selectedColor: Colors.blueGrey.shade900,
+                        children: const {
+                          'PRANZO': Text('🌞', style: TextStyle(fontSize: 20),),
+                          'CENA': Text('🌚', style: TextStyle(fontSize: 20),),
+                          'TUTTI': Text(' TUTTI ', style: TextStyle(fontSize: 10),),
+                        },
+                        onValueChanged: (value) {
+                          setState(() {
+                            _selectedSegmentTimeRange = value;
+                          });
+                          Fluttertoast.showToast(msg: 'Prenotazioni $_selectedSegmentTimeRange');
+                        },
+                        groupValue: _selectedSegmentTimeRange,
+                      ),
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: switchValue,
+                        activeColor: Colors.green,
+                        trackColor: Colors.red,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            switchValue = value ?? false;
+                            if(value!){
+                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.CONFERMATO);
+                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
 
-                  ),
-                  CupertinoSegmentedControl<String>(
-                    selectedColor: Colors.blueGrey.shade900,
-                    children: const {
-                      'PRANZO': Text('🌞', style: TextStyle(fontSize: 20),),
-                      'CENA': Text('🌚', style: TextStyle(fontSize: 20),),
-                      'TUTTI': Text(' TUTTI ', style: TextStyle(fontSize: 10),),
-                    },
-                    onValueChanged: (value) {
-                      setState(() {
-                        _selectedSegment = value;
-                      });
-                      Fluttertoast.showToast(msg: 'Prenotazioni $_selectedSegment');
-                    },
-                    groupValue: _selectedSegment,
+                            }else{
+                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.ELIMINATO);
+                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
+                            }
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-
             if(_searchField) const Center (
               child: Padding(
                 padding: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 3),
@@ -338,7 +333,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   await restaurantManager.refresh(_selectedDate);
                 },
                 child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 160),
+                  padding: const EdgeInsets.only(bottom: 160),
                   itemCount: restaurantManager.currentBookings!.length,
                   itemBuilder: (context, index) {
                     return ReservationCard(booking: restaurantManager.currentBookings![index],
@@ -435,4 +430,76 @@ class _BookingScreenState extends State<BookingScreen> {
       return DateTime.now();
     }
   }
+
+  _buildCurrentDaySituationWidget(List<BookingDTO> list, bool isSelected) {
+
+    if(list.isEmpty){
+      return const SizedBox(width: 0,);
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.table_bar_outlined, size:
+            15,
+              color: list.isNotEmpty ? Colors.green : isSelected ? Colors.white : Colors.grey.shade700,),
+
+            Text(
+              list.length.toString(),
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isSelected
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: isSelected
+                      ? Colors.white
+                      : Colors.black),
+            ),
+
+
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.people_outline, size: 15, color: isSelected ? Colors.white : Colors.grey.shade700,),
+
+            Text(
+              (list.fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString(),
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isSelected
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: isSelected
+                      ? Colors.white
+                      : Colors.black),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(CupertinoIcons.clear_circled_solid, size: 15,color: Colors.red ),
+
+            Text(
+              (list.fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString(),
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isSelected
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: isSelected
+                      ? Colors.white
+                      : Colors.black),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+
 }

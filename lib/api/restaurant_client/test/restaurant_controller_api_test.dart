@@ -92,6 +92,11 @@ void main() {
       // TODO
     });
 
+    //Future<RestaurantDTO> updateConfiguration(RestaurantDTO restaurantDTO) async
+    test('test updateConfiguration', () async {
+      // TODO
+    });
+
     //Future<EmployeeDTO> updateEmployee(String branchCode, EmployeeDTO employeeDTO) async
     test('test updateEmployee', () async {
       // TODO
