@@ -294,19 +294,23 @@ class BookingDTOStatusEnum {
   String toJson() => value;
 
   static const IN_ATTESA = BookingDTOStatusEnum._(r'IN_ATTESA');
+  static const MODIFICATO_DA_UTENTE = BookingDTOStatusEnum._(r'MODIFICATO_DA_UTENTE');
   static const CONFERMATO = BookingDTOStatusEnum._(r'CONFERMATO');
   static const ARRIVATO = BookingDTOStatusEnum._(r'ARRIVATO');
   static const NON_ARRIVATO = BookingDTOStatusEnum._(r'NON_ARRIVATO');
   static const RIFIUTATO = BookingDTOStatusEnum._(r'RIFIUTATO');
+  static const FILA_FAST = BookingDTOStatusEnum._(r'FILA_FAST');
   static const ELIMINATO = BookingDTOStatusEnum._(r'ELIMINATO');
 
   /// List of all possible values in this [enum][BookingDTOStatusEnum].
   static const values = <BookingDTOStatusEnum>[
     IN_ATTESA,
+    MODIFICATO_DA_UTENTE,
     CONFERMATO,
     ARRIVATO,
     NON_ARRIVATO,
     RIFIUTATO,
+    FILA_FAST,
     ELIMINATO,
   ];
 
@@ -347,10 +351,12 @@ class BookingDTOStatusEnumTypeTransformer {
     if (data != null) {
       switch (data) {
         case r'IN_ATTESA': return BookingDTOStatusEnum.IN_ATTESA;
+        case r'MODIFICATO_DA_UTENTE': return BookingDTOStatusEnum.MODIFICATO_DA_UTENTE;
         case r'CONFERMATO': return BookingDTOStatusEnum.CONFERMATO;
         case r'ARRIVATO': return BookingDTOStatusEnum.ARRIVATO;
         case r'NON_ARRIVATO': return BookingDTOStatusEnum.NON_ARRIVATO;
         case r'RIFIUTATO': return BookingDTOStatusEnum.RIFIUTATO;
+        case r'FILA_FAST': return BookingDTOStatusEnum.FILA_FAST;
         case r'ELIMINATO': return BookingDTOStatusEnum.ELIMINATO;
         default:
           if (!allowNull) {

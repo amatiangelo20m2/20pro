@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
-import '../../../global/style.dart';
-import 'booking_card.dart';
+import '../../../../global/style.dart';
+import '../booking_card.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -29,6 +29,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   String? _selectedSegmentTimeRange = 'TUTTI';
   bool switchValue = true;
+
+  BookingDTOStatusEnum currentBookingStatus = BookingDTOStatusEnum.CONFERMATO;
+
 
   @override
   void initState() {
@@ -226,7 +229,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     return GestureDetector(
                       onTap: () => _onDaySelected(day, restaurantManager),
                       child: Container(
-                        width: 80,
+                        width: 120,
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           color: isSelected ? Colors.blueGrey.shade900 : Colors.grey[100],
@@ -251,7 +254,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
                             const SizedBox(height: 2),
                             _buildCurrentDaySituationWidget(
-                                restaurantManager.allActiveBookings!
+                                restaurantManager.allBookings!
                                     .where((element) => isSameDay(element.bookingDate!, day))
                                     .toList(),
 
@@ -270,7 +273,7 @@ class _BookingScreenState extends State<BookingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Prenotazioni ${italianDateFormat.format(_selectedDate)}'.toUpperCase(),),
+                  Text('${italianDateFormat.format(_selectedDate)}'.toUpperCase(), style: TextStyle(fontSize: 10),),
                   Row(
                     children: [
                       Text(restaurantManager
@@ -292,7 +295,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         },
                         groupValue: _selectedSegmentTimeRange,
                       ),
-                      Text(restaurantManager.currentBookingStatus.value),
+                      Text(currentBookingStatus.value),
                       CupertinoSwitch(
                         // This bool value toggles the switch.
                         value: switchValue,
@@ -302,12 +305,16 @@ class _BookingScreenState extends State<BookingScreen> {
                           setState(() {
                             switchValue = value ?? false;
                             if(value!){
-                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.CONFERMATO);
-                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
+                              setState(() {
+                                currentBookingStatus = BookingDTOStatusEnum.CONFERMATO;
+                              });
+                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${currentBookingStatus}');
 
                             }else{
-                              restaurantManager.updateBookingStatus(BookingDTOStatusEnum.RIFIUTATO);
-                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${restaurantManager.currentBookingStatus}');
+                              setState(() {
+                                currentBookingStatus = BookingDTOStatusEnum.RIFIUTATO;
+                              });
+                              Fluttertoast.showToast(msg: 'Prenotazioni in stato ${currentBookingStatus}');
                             }
                           });
                         },
@@ -335,9 +342,9 @@ class _BookingScreenState extends State<BookingScreen> {
                 },
                 child: ListView.builder(
                   padding: const EdgeInsets.only(bottom: 160),
-                  itemCount: restaurantManager.currentBookings!.length,
+                  itemCount: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).length,
                   itemBuilder: (context, index) {
-                    return ReservationCard(booking: restaurantManager.currentBookings![index],
+                    return ReservationCard(booking: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).toList()[index],
                       formDTO: restaurantManager.currentBranchForms!.where((element) => element.formCode
                           == restaurantManager.currentBookings![index].formCode).first,);
                   },
@@ -443,12 +450,10 @@ class _BookingScreenState extends State<BookingScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.table_bar_outlined, size:
-            15,
-              color: list.isNotEmpty ? Colors.green : isSelected ? Colors.white : Colors.grey.shade700,),
-
+            const Icon(Icons.table_bar_outlined, size:
+            18, color: Colors.green),
             Text(
-              list.length.toString(),
+              list.where((element) => element.status == BookingDTOStatusEnum.CONFERMATO).length.toString(),
               style: TextStyle(
                   fontSize: 10,
                   fontWeight: isSelected
@@ -465,28 +470,10 @@ class _BookingScreenState extends State<BookingScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.people_outline, size: 15, color: isSelected ? Colors.white : Colors.grey.shade700,),
+            const Icon(CupertinoIcons.person_2_fill, size: 15, color: Colors.blue,),
 
             Text(
-              (list.fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString(),
-              style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: isSelected
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: isSelected
-                      ? Colors.white
-                      : Colors.black),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(CupertinoIcons.clear_circled_solid, size: 15,color: Colors.red ),
-
-            Text(
-              (list.fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString(),
+              (list.where((element) => element.status == BookingDTOStatusEnum.CONFERMATO).fold(0, (total, booking) => total + (booking.numGuests ?? 0))).toString(),
               style: TextStyle(
                   fontSize: 10,
                   fontWeight: isSelected

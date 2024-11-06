@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:ventipro/app/core/booking/booking_fast_queue/fast_queue.dart';
-import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
-import 'booking/booking.dart';
+import 'booking/booking_confirmed/booking.dart';
+import 'booking/booking_processed/booking_processed.dart';
 import 'booking/booking_to_manage/booking_to_manage.dart';
+import 'booking/edited_by_customer.dart';
 import 'notification/notification_screen.dart';
 import 'notification/state_manager/notification_state_manager.dart';
 
@@ -35,138 +37,116 @@ class _MainScreenState extends State<MainScreen> {
           Widget? child) {
         return Scaffold(
 
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blueGrey.shade900,
-            child: const Icon(CupertinoIcons.add, color: Colors.white,),
-            onPressed: () {
-          },),
-          drawer: Drawer(),
+          bottomNavigationBar: BottomNavigationBar(
+           onTap: (index){
+              setState(() {
+                _pageIndex = index;
+              });
+            },
+            items: [
+              _buildBottomNavigationBarItem(
+                svgPath: 'assets/svg/calendar.svg',
+                label: BookingDTOStatusEnum.CONFERMATO.value,
+                badgeColor: Colors.green,
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.CONFERMATO).length.toString(),
+              ),
+              _buildBottomNavigationBarItem(
+                svgPath: 'assets/svg/hourglass.svg',
+                label: BookingDTOStatusEnum.IN_ATTESA.value,
+                badgeColor: CupertinoColors.systemYellow,
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.IN_ATTESA).length.toString(),
+              ),
+              _buildBottomNavigationBarItem(
+                svgPath: 'assets/svg/fast_queue.svg',
+                label: BookingDTOStatusEnum.FILA_FAST.value,
+                badgeColor: Colors.pink,
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.FILA_FAST).length.toString(),
+              ),
+              _buildBottomNavigationBarItem(
+                svgPath: 'assets/svg/booking_edited.svg',
+                label: 'Fast Track',
+                badgeColor: Colors.purple,
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length.toString(),
+              ),
+              _buildBottomNavigationBarItem(
+                svgPath: 'assets/svg/booking_done.svg',
+                label: 'Processate',
+                badgeColor: Colors.blue,
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length.toString(),
+              ),
+          ],),
+          drawer: const Drawer(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text('20m2'),
+                  subtitle: Text('xxx'),
+                  leading: Icon(CupertinoIcons.home),
+                ),
+                ListTile(
+                  title: Text('I tuoi clienti'),
+                  subtitle: Text('xxx'),
+                  leading: Icon(CupertinoIcons.person_2),
+                ),
+                ListTile(
+                  title: Text('Chat diretta'),
+                  subtitle: Text('xxx'),
+                  leading: Icon(CupertinoIcons.chat_bubble_2),
+                ),
+
+              ],
+            ),
+          ),
           appBar: AppBar(
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             actions: [
-              Consumer<NotificationStateManager>(
-                builder: (BuildContext context, NotificationStateManager value, Widget? child) {
-                  return IconButton(onPressed: () {
-                    Navigator.pushNamed(context, NotificationsPage.routeName);
-                  }, icon: badges.Badge(
-                      badgeContent: Text(value.notifications.length.toString(), style: TextStyle(color: Colors.white),),
-                      position: badges.BadgePosition.topEnd(),
-                      child: const Icon(CupertinoIcons.bell))
-                  );
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.calendar_today, color: Colors.blueGrey.shade900,),),
+                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.shopping_cart, color: Colors.blueGrey.shade900,),),
+                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.person_2_square_stack, color: Colors.blueGrey.shade900,),),
+
+                  Consumer<NotificationStateManager>(
+                    builder: (BuildContext context, NotificationStateManager value, Widget? child) {
+                      return IconButton(onPressed: () {
+                        Navigator.pushNamed(context, NotificationsPage.routeName);
+                      }, icon: badges.Badge(
+                          badgeContent: Text(value.notifications.length.toString(), style: TextStyle(color: Colors.white),),
+                          position: badges.BadgePosition.topEnd(),
+                          child: const Icon(CupertinoIcons.bell))
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Image.asset('assets/images/logo.png', width: 25),
-                    const Text('20PRO'),
+                    SvgPicture.asset(
+                      'assets/svg/logo_20_black.svg',
+                      width: 70,
+                    ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FloatingActionButton(
-                      heroTag: "btn1",
-                      onPressed: () {
-                        setState(() {
-                          _pageIndex = 0;
-                          restaurantStateManager.updateBookingStatus(BookingDTOStatusEnum.CONFERMATO);
-                        });
-                      },
-                      mini: _pageIndex != 0,
-                      backgroundColor: _pageIndex == 0 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _pageIndex == 0 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: badges.Badge(
-                        badgeStyle: const badges.BadgeStyle(
-                            badgeColor: Colors.green,
-                        ),
-                          badgeContent: Text(
-                            restaurantStateManager.allActiveBookings
-                            !.where((element) => isSameDay(element.bookingDate!, DateTime.now())).length.toString(),
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
-                          ),
-                          child: const Icon(CupertinoIcons.calendar)
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    FloatingActionButton(
-                      heroTag: "btn2",
-                      onPressed: () {
-                        setState(() {
-                          _pageIndex = 1;
-                        });
-                      },
-                      mini: _pageIndex != 1, // Set to mini if not selected
-                      backgroundColor: _pageIndex == 1 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _pageIndex == 1 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: badges.Badge(
-                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.orange),
-                          badgeContent: Text(
-                            restaurantStateManager.allActiveBookings!.length.toString(),
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
-                          ),
-                          child: const Icon(CupertinoIcons.globe)
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    FloatingActionButton(
-                      heroTag: "btn2",
-                      onPressed: () {
-                        setState(() {
-                          _pageIndex = 3;
-                        });
-                      },
-                      mini: _pageIndex != 3, // Set to mini if not selected
-                      backgroundColor: _pageIndex == 3 ? Colors.blueGrey.shade900 : Colors.grey.shade100, // Set background color based on selection
-                      foregroundColor: _pageIndex == 3 ? Colors.white : Colors.black, // Set icon color based on selection
-                      child: const badges.Badge(
-                        badgeStyle: badges.BadgeStyle(badgeColor: Colors.blue),
-                          badgeContent: Text(
-                            'F',
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          ),
-                          child: Icon(CupertinoIcons.clock)
-                      ),
-                    ),
-                    const SizedBox(width: 15),
+                FloatingActionButton(
+                  mini: true,
+                  heroTag: "btn1",
+                  onPressed: () {
 
-                  ],
+                  },
+                  backgroundColor: Colors.green,
+                  child: Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30,),
                 ),
-                const SizedBox(width: 0,)
               ],
             ),
           ),
-          body: Stack(
-            children: [
-              // Display the selected screen based on button index
-              getPageByIndex(_pageIndex),
-              Positioned(
-                bottom: 30, // Position from the bottom
-                left: 0,
-                right: 0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text('Powerade by ', style: TextStyle(fontSize: 6),),
-                          Image.asset('assets/images/logo-black.png', width: 15),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+          body: getPageByIndex(_pageIndex),
           backgroundColor: Colors.white,
         );
       },
@@ -181,10 +161,38 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const BookingManager();
       case 2:
-        return const BookingScreen();
-      case 3:
         return const FastQueue();
+      case 3:
+        return const BookingEditedByCustomer();
+      case 4:
+        return const BookingProcessed();
+
 
     }
+  }
+
+  BottomNavigationBarItem _buildBottomNavigationBarItem({
+    required String svgPath,
+    required String label,
+    required Color badgeColor,
+    required String badgeCount,
+
+  }) {
+    return BottomNavigationBarItem(
+
+      icon: badges.Badge(
+        badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
+        badgeContent: Text(
+          badgeCount.toString(),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
+        ),
+        child: SvgPicture.asset(
+          svgPath,
+          height: 23,
+        ),
+      ),
+      label: label,
+
+    );
   }
 }

@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:ventipro/global/style.dart';
+import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import '../../../api/restaurant_client/lib/api.dart';
 
 class ReservationCard extends StatelessWidget {
@@ -86,7 +89,7 @@ class ReservationCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(flex: 3, child: _buildCustomerInfo()),
-              Expanded(flex: 1, child: Text(formDTO.outputNameForCustomer!, style: TextStyle(fontSize: 20),)),
+              Expanded(flex: 1, child: Text(formDTO.outputNameForCustomer! + '📱🌐', style: TextStyle(fontSize: 20),)),
               Expanded(flex: 1, child: _buildGuestInfo()),
               Expanded(flex: 2, child: _buildTimeBooking(context)),
               Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.doc_plaintext),)),
@@ -111,16 +114,14 @@ class ReservationCard extends StatelessWidget {
               Text(
                 booking.customer?.firstName ?? '',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                   color: Colors.blueGrey.shade900,
                 ),
               ),
               Text(
                 booking.customer?.lastName ?? '',
                 style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 11,
                   color: Colors.blueGrey.shade900,
                 ),
               ),
@@ -136,13 +137,36 @@ class ReservationCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Icon(CupertinoIcons.clock, color: Colors.blueGrey,),
-        Text(
-          ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.blueGrey.shade900,
-            fontWeight: FontWeight.bold,
-          ),
+        Column(
+          children: [
+            Text(
+              ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.blueGrey.shade900,
+              ),
+            ),
+            Text(
+              italianDateFormat.format(booking.bookingDate!),
+              style: TextStyle(
+                fontSize: 5,
+                color: Colors.blueGrey.shade900,
+              ),
+            ),
+            Text(
+              booking.bookingDate!.toLocal().toString(),
+              style: TextStyle(
+                fontSize: 5,
+                color: Colors.blueGrey.shade900,
+              ),
+            ),
+            Text(
+              booking.bookingDate!.toUtc().toString(),
+              style: const TextStyle(
+                fontSize: 5,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -151,12 +175,14 @@ class ReservationCard extends StatelessWidget {
   CupertinoButton _buildStatusButton(BuildContext context) {
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      color: _getStatusColor(booking.status?.value.toString()),
+      color: _getStatusColor(booking.status!),
       borderRadius: BorderRadius.circular(8),
-      onPressed: () {},
+      onPressed: () {
+
+      },
       child: Text(
-        booking.status!.value.toString(),
-        style: TextStyle(
+        booking.status!.value.toString().replaceAll('_', ' '),
+        style: const TextStyle(
           color: CupertinoColors.white,
           fontSize: 12,
         ),
@@ -189,14 +215,18 @@ class ReservationCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'confermato':
+  Color _getStatusColor(BookingDTOStatusEnum statusEnum) {
+    switch (statusEnum) {
+      case BookingDTOStatusEnum.CONFERMATO:
         return CupertinoColors.activeGreen;
-      case 'inattesa':
+      case BookingDTOStatusEnum.IN_ATTESA:
         return CupertinoColors.systemYellow;
-      case 'rifiutato':
+      case BookingDTOStatusEnum.RIFIUTATO:
         return CupertinoColors.destructiveRed;
+      case BookingDTOStatusEnum.FILA_FAST:
+        return Colors.purple;
+      case BookingDTOStatusEnum.ELIMINATO:
+        return CupertinoColors.black;
       default:
         return CupertinoColors.systemGrey;
     }
@@ -221,36 +251,45 @@ class ReservationCard extends StatelessWidget {
             ),
             Positioned(
               right: 0,
-              child: IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.phone)),
+              child: IconButton(onPressed: () {
+
+              }, icon: Icon(CupertinoIcons.phone)),
             ),
           ],
         ),
         actions: [
           CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, 'arrival_time');
-              print("Sorting by arrival time");
+              booking.status = BookingDTOStatusEnum.CONFERMATO;
+              Provider.of<RestaurantStateManager>(context, listen: false)
+                  .updateBooking(booking);
+              Navigator.pop(context, null);
             },
             child: Text('Arrivato'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, 'booking_date');
-              print("Sorting by booking date");
+              booking.status = BookingDTOStatusEnum.RIFIUTATO;
+              Provider.of<RestaurantStateManager>(context, listen: false)
+                  .updateBooking(booking);
+              Navigator.pop(context, null);
+
             },
             child: Text('Rifiuta'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              Navigator.pop(context, 'name');
-              print("Sorting by name");
+              booking.status = BookingDTOStatusEnum.ELIMINATO;
+              Provider.of<RestaurantStateManager>(context, listen: false)
+                  .updateBooking(booking);
+              Navigator.pop(context, null);
             },
             child: Text('Cancella'),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
           onPressed: () {
-            Navigator.pop(context, null); // Close without any action
+            // Close without any action
           },
           isDefaultAction: true,
           child: const Text('Indietro'),

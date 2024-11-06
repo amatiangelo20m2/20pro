@@ -54,18 +54,17 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://192.168.1.4:22297/restaurantservice*
+All URIs are relative to *http://192.168.1.4:64145/restaurantservice*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *BookingControllerApi* | [**create**](doc//BookingControllerApi.md#create) | **POST** /api/booking/create | 
 *BookingControllerApi* | [**deleteBooking**](doc//BookingControllerApi.md#deletebooking) | **DELETE** /api/booking/delete/{bookingCode} | 
-*BookingControllerApi* | [**findBookingByBranchCode**](doc//BookingControllerApi.md#findbookingbybranchcode) | **GET** /api/booking/retrievebynranchcode/{branchCode} | 
 *BookingControllerApi* | [**findBookingByCustomerEmail**](doc//BookingControllerApi.md#findbookingbycustomeremail) | **GET** /api/booking/retrievebycustomeremail/{email} | 
 *BookingControllerApi* | [**findBookingByCustomerPrefixAndPhone**](doc//BookingControllerApi.md#findbookingbycustomerprefixandphone) | **GET** /api/booking/retrievebyphone/{prefix}/{phone} | 
 *BookingControllerApi* | [**findBookingByFormCode**](doc//BookingControllerApi.md#findbookingbyformcode) | **GET** /api/booking/retrievebyformcode/{formCode} | 
 *BookingControllerApi* | [**retrieveBookingByBranchCodeAndDate**](doc//BookingControllerApi.md#retrievebookingbybranchcodeanddate) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{date} | 
-*BookingControllerApi* | [**retrieveBookingByStatusAndBranchCode**](doc//BookingControllerApi.md#retrievebookingbystatusandbranchcode) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{bookingStatus}/{fromDate}/{toDate} | 
+*BookingControllerApi* | [**retrieveBookingByStatusAndBranchCode**](doc//BookingControllerApi.md#retrievebookingbystatusandbranchcode) | **GET** /api/booking/retrievebynranchcode/{branchCode}/{fromDate}/{toDate} | 
 *BookingControllerApi* | [**retrieveHistoricalCustomersBasedOnReservationsByBranchCode**](doc//BookingControllerApi.md#retrievehistoricalcustomersbasedonreservationsbybranchcode) | **GET** /api/booking/retrievehistoricalcustomers/bybookingson/{branchCode} | 
 *BookingControllerApi* | [**updateBooking**](doc//BookingControllerApi.md#updatebooking) | **PUT** /api/booking/updatebooking | 
 *CustomerControllerApi* | [**findcustomerByPhoneAndPrefix**](doc//CustomerControllerApi.md#findcustomerbyphoneandprefix) | **GET** /api/customer/retrieve/{prefix}/{phoneNumber} | 

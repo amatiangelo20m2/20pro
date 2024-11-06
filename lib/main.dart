@@ -22,6 +22,7 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await initializeDateFormatting('it', null);
   await _setupFirebaseMessaging();
+
   runApp(const _20PRO());
 }
 
@@ -89,12 +90,14 @@ class _20PRO extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+
         routes: Routes.routes,
         title: '20PRO',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
+          fontFamily: 'Helvetica',
         ),
         home: SplashScreen(),
       ),
