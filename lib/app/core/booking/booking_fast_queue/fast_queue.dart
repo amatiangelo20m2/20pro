@@ -93,7 +93,7 @@ class _FastQueueState extends State<FastQueue> {
             child: Text(
               'Lista di Attesa di ${italianDateFormat.format(date)}'.toUpperCase(),
               style: const TextStyle(
-                  fontSize: 17,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold),
             ),
           ),

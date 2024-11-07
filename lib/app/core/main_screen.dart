@@ -39,8 +39,10 @@ class _MainScreenState extends State<MainScreen> {
           Widget? child) {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(
-            selectedLabelStyle: TextStyle(color: Colors.black),
-           unselectedLabelStyle: TextStyle(color: Colors.blueGrey.shade600),
+            selectedItemColor: Colors.blueGrey,
+            unselectedItemColor: Colors.grey,
+           selectedLabelStyle: TextStyle(fontSize: 8),
+           unselectedFontSize: 7,
            onTap: (index){
               setState(() {
                 _pageIndex = index;
@@ -57,7 +59,9 @@ class _MainScreenState extends State<MainScreen> {
                 svgPath: 'assets/svg/hourglass.svg',
                 label: BookingDTOStatusEnum.IN_ATTESA.value,
                 badgeColor: getStatusColor(BookingDTOStatusEnum.IN_ATTESA),
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.IN_ATTESA).length,
+                badgeCount: restaurantStateManager.allBookings!
+                    .where((element) => element.status == BookingDTOStatusEnum.IN_ATTESA)
+                    .length,
               ),
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/fast_queue.svg',
@@ -72,10 +76,10 @@ class _MainScreenState extends State<MainScreen> {
                 badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length,
               ),
               _buildBottomNavigationBarItem(
-                svgPath: 'assets/svg/booking_done.svg',
+                svgPath: 'assets/svg/check.svg',
                 label: 'Processate',
-                badgeColor: Colors.blue,
-                badgeCount: 0,
+                badgeColor: getStatusColor(BookingDTOStatusEnum.ARRIVATO),
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.ARRIVATO || element.status == BookingDTOStatusEnum.RIFIUTATO).length,
               ),
           ],),
           drawer: const Drawer(
@@ -108,9 +112,6 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
-                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.calendar_today, color: Colors.blueGrey.shade900,),),
-                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.shopping_cart, color: Colors.blueGrey.shade900,),),
-                  IconButton(onPressed: (){},icon: Icon(CupertinoIcons.person_2_square_stack, color: Colors.blueGrey.shade900,),),
 
                   Consumer<NotificationStateManager>(
                     builder: (BuildContext context, NotificationStateManager value, Widget? child) {
@@ -119,10 +120,12 @@ class _MainScreenState extends State<MainScreen> {
                       }, icon: Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: badges.Badge(
-                          showBadge: value.notifications.isNotEmpty,
-                            badgeContent: Text(value.notifications.length.toString(), style: const TextStyle(color: Colors.white, fontSize: 11),),
+                          showBadge: value.notifications.where((element) => element.read == '0').isNotEmpty,
+                            badgeContent: Text(value.notifications.where((element) => element.read == '0')
+                                .length.toString(), style: const TextStyle(color: Colors.white, fontSize: 11),),
                             position: badges.BadgePosition.topEnd(),
-                            child: value.notifications.isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : Icon(CupertinoIcons.bell)),
+                            child: value.notifications.where((element) => element.read == '0')
+                                .isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : Icon(CupertinoIcons.bell)),
                       )
                       );
                     },
@@ -169,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
       case 3:
         return const BookingEditedByCustomer();
       case 4:
-        return const BookingProcessed();
+        return const ProcessedBookings();
 
 
     }
@@ -188,15 +191,15 @@ class _MainScreenState extends State<MainScreen> {
         badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
         badgeContent: Text(
           badgeCount.toString(),
-          style: const TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 8),
         ),
         child: SvgPicture.asset(
+          color: Colors.blueGrey,
           svgPath,
           height: 23,
         ),
       ),
       label: label,
-
     );
   }
 }

@@ -25,6 +25,7 @@ class RestaurantStateManager extends ChangeNotifier {
 
   // GETTER METHODS
   RestaurantDTO? get restaurantConfiguration => _restaurantConfiguration;
+  BookingControllerApi get bookingControllerApi => _bookingControllerApi;
   List<BookingDTO>? get allBookings => _allBookings;
   ApiClient get restaurantClient => _restaurantClient;
   RestaurantControllerApi get restaurantControllerApi => _restaurantControllerApi;
@@ -66,9 +67,6 @@ class RestaurantStateManager extends ChangeNotifier {
   }
 
   updateBooking(BookingDTO bookingDTO) async {
-    bookingDTO.bookingDate = bookingDTO.bookingDate!.add(Duration(hours: 1)).toLocal();
-    print('Booking in updating:  ${bookingDTO.bookingDate}');
-
     await _bookingControllerApi.updateBooking(bookingDTO);
     refresh(DateTime.now());
   }

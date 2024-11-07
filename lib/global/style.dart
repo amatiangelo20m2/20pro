@@ -52,9 +52,9 @@ Color getStatusColor(BookingDTOStatusEnum statusEnum) {
     case BookingDTOStatusEnum.ARRIVATO:
       return CupertinoColors.activeBlue;
     case BookingDTOStatusEnum.NON_ARRIVATO:
-      return CupertinoColors.destructiveRed;
+      return Colors.blueGrey;
     case BookingDTOStatusEnum.LISTA_ATTESA:
-      return Colors.blueGrey.shade600;
+      return Colors.teal.shade300;
     case BookingDTOStatusEnum.ELIMINATO:
       return CupertinoColors.black;
     default:

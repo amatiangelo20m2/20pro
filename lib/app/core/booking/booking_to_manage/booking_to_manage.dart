@@ -82,7 +82,7 @@ class _BookingManagerState extends State<BookingManager> {
             child: Text(
               'Prenotazioni di ${italianDateFormat.format(date)}'.toUpperCase(),
               style: const TextStyle(
-                  fontSize: 17,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold),
             ),
           ),

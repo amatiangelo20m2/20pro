@@ -3,8 +3,10 @@ class NotificationModel {
   final String title;
   final String body;
   final String dateReceived;
+  final String read;
+  final navigationPage;
 
-  NotificationModel({this.id, required this.title, required this.body, required this.dateReceived});
+  NotificationModel({this.id, required this.title, required this.body, required this.dateReceived, required this.read, required this.navigationPage});
 
   // Convert a Notification to a Map (for inserting to the DB)
   Map<String, dynamic> toMap() {
@@ -13,6 +15,8 @@ class NotificationModel {
       'title': title,
       'body': body,
       'dateReceived': dateReceived,
+      'read' : read,
+      'navigationPage' : navigationPage
     };
   }
 
@@ -22,7 +26,9 @@ class NotificationModel {
       id: map['id'],
       title: map['title'],
       body: map['body'],
-        dateReceived: map['dateReceived']
+        dateReceived: map['dateReceived'],
+      read: map['read'],
+      navigationPage: map['navigationPage'],
     );
   }
 }

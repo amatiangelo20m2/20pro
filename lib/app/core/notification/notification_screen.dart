@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/app/core/notification/state_manager/notification_state_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:badges/badges.dart' as badges;
 
 class NotificationsPage extends StatefulWidget {
   static final String routeName = 'notification_screen';
@@ -23,7 +24,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         elevation: 0,
         actions: [
           IconButton(onPressed: (){
-
+             notificationProvider.deleteAll();
           }, icon: const Icon(CupertinoIcons.delete))
         ],
       ),
@@ -46,7 +47,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           ),
           const SizedBox(height: 10),
           Text(
-            'You are all caught up!',
+            'Nessuna notifica in arrivo',
             style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
           ),
         ],
@@ -55,6 +56,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Widget _buildNotificationList(NotificationStateManager notificationProvider) {
+
     return AnimatedList(
       initialItemCount: notificationProvider.notifications.length,
       itemBuilder: (context, index, animation) {
@@ -81,18 +83,24 @@ class _NotificationsPageState extends State<NotificationsPage> {
               surfaceTintColor: Colors.white,
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Colors.blueGrey,
-                  child: Icon(Icons.notifications, color: Colors.white),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blueGrey.withOpacity(0.1),
+                  child: badges.Badge(
+
+                      showBadge: notification.read == '0',
+                      badgeAnimation: const badges.BadgeAnimation.scale(),
+                      child: Icon(Icons.notifications, color: Colors.blueGrey.shade700)),
                 ),
                 title: Text(
                   notification.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style:  TextStyle(fontSize: 13, color: Colors.blueGrey.shade900),
                 ),
-                subtitle: Text(notification.body, maxLines: 2, overflow: TextOverflow.ellipsis),
+                subtitle: Text(notification.body,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11),),
                 trailing: Text(
                   _formatDate(notification.dateReceived),
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                  style: TextStyle(fontSize: 10, color: Colors.blueGrey.shade900),
                 ),
               ),
             ),

@@ -60,7 +60,7 @@ Future<void> _setupFirebaseMessaging() async {
     // Retrieve the current context using a navigator key
     if (navigatorKey.currentContext != null) {
       final notification = NotificationModel(title: message.notification!.title!,
-          body: message.notification!.body!, dateReceived: DateTime.now().toUtc().toIso8601String());
+          body: message.notification!.body!, dateReceived: DateTime.now().toUtc().toIso8601String(), read: '0', navigationPage: 'XXX', );
 
       await notificationStateManager.addNotification(notification);
     }

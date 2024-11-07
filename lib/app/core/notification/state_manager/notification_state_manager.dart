@@ -32,4 +32,16 @@ class NotificationStateManager with ChangeNotifier {
     await DatabaseHelper.instance.deleteNotification(id);
     await fetchNotifications(); // Refresh the notifications list
   }
+
+  Future<void> deleteAll() async {
+    await DatabaseHelper.instance.deleteAll();
+    await fetchNotifications();
+  }
+
+  Future<void> setAllNotificationToRead(bool updateAfterQuery) async {
+    await DatabaseHelper.instance.setAllNotificationToReadStatus();
+    if(updateAfterQuery){
+      await fetchNotifications();
+    }
+  }
 }

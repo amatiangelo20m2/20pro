@@ -146,26 +146,6 @@ class ReservationCard extends StatelessWidget {
                 color: Colors.blueGrey.shade900,
               ),
             ),
-            Text(
-              italianDateFormat.format(booking.bookingDate!),
-              style: TextStyle(
-                fontSize: 5,
-                color: Colors.blueGrey.shade900,
-              ),
-            ),
-            Text(
-              booking.bookingDate!.toLocal().toString(),
-              style: TextStyle(
-                fontSize: 5,
-                color: Colors.blueGrey.shade900,
-              ),
-            ),
-            Text(
-              booking.bookingDate!.toUtc().toString(),
-              style: const TextStyle(
-                fontSize: 5,
-              ),
-            ),
           ],
         ),
       ],
@@ -262,9 +242,12 @@ class ReservationCard extends StatelessWidget {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              booking.status = BookingDTOStatusEnum.RIFIUTATO;
               Provider.of<RestaurantStateManager>(context, listen: false)
-                  .updateBooking(booking);
+                  .updateBooking(BookingDTO(
+                  bookingCode: booking.bookingCode,
+                  bookingId: booking.bookingId,
+                  status: BookingDTOStatusEnum.RIFIUTATO
+              ));
               Navigator.pop(context, null);
 
             },
@@ -272,9 +255,12 @@ class ReservationCard extends StatelessWidget {
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              booking.status = BookingDTOStatusEnum.ELIMINATO;
               Provider.of<RestaurantStateManager>(context, listen: false)
-                  .updateBooking(booking);
+                  .updateBooking(BookingDTO(
+                bookingCode: booking.bookingCode,
+                bookingId: booking.bookingId,
+                status: BookingDTOStatusEnum.ELIMINATO
+              ));
               Navigator.pop(context, null);
             },
             child: Text('Cancella'),

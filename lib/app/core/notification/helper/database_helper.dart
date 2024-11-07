@@ -28,7 +28,9 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         body TEXT NOT NULL,
-        dateReceived TEXT NOT NULL
+        dateReceived TEXT NOT NULL,
+        read TEXT NOT NULL,
+        navigationPage TEXT NOT NULL
       )
     ''');
   }
@@ -47,6 +49,11 @@ class DatabaseHelper {
     return result.map((map) => NotificationModel.fromMap(map)).toList();
   }
 
+  Future<void> deleteAll() async {
+    final db = await instance.database;
+    await db.delete('notifications'); // Deletes all rows from the notifications table
+  }
+
   // Delete a notification
   Future<int> deleteNotification(int id) async {
     final db = await instance.database;
@@ -56,4 +63,16 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
+  // Set all notifications' read status to '1'
+  Future<void> setAllNotificationToReadStatus() async {
+    final db = await instance.database;
+    await db.update(
+      'notifications',
+      {'read': '1'},  // Set 'read' column to '1'
+      where: 'read = ?',
+      whereArgs: ['0'],  // Only update rows where 'read' is currently '0'
+    );
+  }
+
 }

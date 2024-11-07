@@ -7,6 +7,7 @@ import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
 import '../../../../global/style.dart';
+import '../crud_widget/create_booking.dart';
 import 'booking_card.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -151,7 +152,9 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget build(BuildContext context) {
     return Consumer<RestaurantStateManager>(
       builder: (BuildContext context, RestaurantStateManager restaurantManager, Widget? child) {
-        return Column(
+        return Stack(
+          children: [
+          Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -229,7 +232,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     return GestureDetector(
                       onTap: () => _onDaySelected(day, restaurantManager),
                       child: Container(
-                        width: 120,
+                        width: 100,
                         margin: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           color: isSelected ? Colors.blueGrey.shade900 : Colors.grey[100],
@@ -334,7 +337,7 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
             ),
             Expanded(
-              flex: 5,
+              flex: 4,
               child: RefreshIndicator(
 
                 onRefresh: () async {
@@ -345,15 +348,25 @@ class _BookingScreenState extends State<BookingScreen> {
                   itemCount: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).length,
                   itemBuilder: (context, index) {
                     return ReservationCard(booking: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).toList()[index],
-                      formDTOs: restaurantManager
-                          .currentBranchForms!);
+                        formDTOs: restaurantManager
+                            .currentBranchForms!);
                   },
                 ),
               ),
             ),
 
           ],
-        );
+        ), Positioned(bottom: 0, right: 0, child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: FloatingActionButton(
+            backgroundColor: getStatusColor(BookingDTOStatusEnum.CONFERMATO),
+            child: const Icon(CupertinoIcons.add, size: 30, color: Colors.white,),
+            onPressed: () {
+              showFormBottomSheet(context, BookingDTOStatusEnum.CONFERMATO);
+
+            },),
+        ))
+          ],);
       },
 
     );
@@ -486,6 +499,16 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  void showFormBottomSheet(BuildContext context, BookingDTOStatusEnum bookingStatus) {
+    showModalBottomSheet(
+        elevation: 10,
+        backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
+        context: context,
+        isScrollControlled: true, // Allows modal to adjust to keyboard
+        builder: (context) => CreateBooking()
     );
   }
 

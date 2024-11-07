@@ -63,12 +63,6 @@ class _FastQueueCardState extends State<FastQueueCard> {
 
 
   @override
-  void dispose() {
-    _timer?.cancel(); // Cancel the timer when the widget is disposed
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -142,23 +136,25 @@ class _FastQueueCardState extends State<FastQueueCard> {
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
-              Expanded(flex: 3, child: _buildCustomerInfo()),
-              Expanded(
-                flex: 2,
-                child: _buildWidgetByElapsedTime(),
-              ),
-              Expanded(flex: 1, child: _buildGuestInfo()),
-              Expanded(flex: 2, child: _buildTimeBooking(context)),
-
+              Expanded(flex: 2, child: _buildCustomerInfo()),
               Expanded(flex: 1,
                 child: Consumer<NotificationStateManager>(
-                  builder: (BuildContext context, NotificationStateManager value, Widget? child) {
-                    return IconButton(onPressed: () {
-
-                      value.addNotification(NotificationModel(title: 'sdffds', body: 'dsffsd', dateReceived: '2024-12-12'));
-                    }, icon: const Icon(CupertinoIcons.paperplane),);
+                  builder: (BuildContext context, NotificationStateManager notificationManager, Widget? child) {
+                    return _buildWidgetByElapsedTime(notificationManager);
                   },
-                ),),
+                ),
+              ),
+              Expanded(flex: 1, child: _buildGuestInfo()),
+              Expanded(flex: 1, child: _buildTimeBooking(context)),
+              Expanded(flex: 1,
+                child: Consumer<NotificationStateManager>(
+                  builder: (BuildContext context, NotificationStateManager notificationManager, Widget? child) {
+                    return IconButton(onPressed: () async {
+                      await notificationManager.addNotification(NotificationModel(title: 'asd', body: 'sasdds', dateReceived: '2024-12-12', read: '0', navigationPage: '1232133'));
+                    }, icon: Icon(CupertinoIcons.paperplane));
+                  },
+                ),
+              ),
               Expanded(flex: 2, child: _buildStatusButton(context)),
             ],
           ),
@@ -282,19 +278,26 @@ class _FastQueueCardState extends State<FastQueueCard> {
         ),
         actions: [
           CupertinoActionSheetAction(
-            onPressed: () {
-              booking.status = BookingDTOStatusEnum.CONFERMATO;
-              Provider.of<RestaurantStateManager>(context, listen: false)
-                  .updateBooking(booking);
+            onPressed: () async {
+              await Provider.of<RestaurantStateManager>(context, listen: false)
+                  .updateBooking(BookingDTO(
+                bookingCode: booking.bookingCode,
+                  bookingId: booking.bookingId,
+                  timeSlot: booking.timeSlot,
+                  formCode: booking.formCode,
+                  status: BookingDTOStatusEnum.CONFERMATO,
+              ));
               Navigator.pop(context, null);
             },
             child: const Text('Conferma prenotazione'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
-              booking.status = BookingDTOStatusEnum.ARRIVATO;
               Provider.of<RestaurantStateManager>(context, listen: false)
-                  .updateBooking(booking);
+                  .updateBooking(BookingDTO(
+                bookingCode: booking.bookingCode,
+                status: BookingDTOStatusEnum.ARRIVATO,
+              ));
               Navigator.pop(context, null);
 
             },
@@ -331,7 +334,22 @@ class _FastQueueCardState extends State<FastQueueCard> {
     );
   }
 
-  Widget _buildWidgetByElapsedTime() {
+  bool _notificationSent = false;
+
+  Widget _buildWidgetByElapsedTime(NotificationStateManager notificationManager) {
+    if (_timeElapsed < Duration.zero && !_notificationSent) {
+      notificationManager.addNotification(
+        NotificationModel(
+          title: 'Tempo di attesa per ${widget.booking.customer!.firstName!} ${widget.booking.customer!.lastName!} terminato!!',
+          body: 'Manda il messaggio di invito',
+          dateReceived: DateTime.now().toLocal().toString(),
+          read: '0',
+          navigationPage: 'QUEUE_FAST',
+        ),
+      );
+      _notificationSent = true; // Set the flag to true so it only triggers once
+    }
+
     if (_timeElapsed > const Duration(seconds: 3)) {
       // Case 1: Time elapsed is greater than 3 seconds
       return Text(
@@ -339,7 +357,6 @@ class _FastQueueCardState extends State<FastQueueCard> {
         style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
       );
     } else if (_timeElapsed > Duration.zero && _timeElapsed <= const Duration(seconds: 3)) {
-      // Case 2: Time elapsed is between 0 and 3 seconds
       return Lottie.asset('assets/lotties/321go.json', height: 45);
     } else if(_timeElapsed < const Duration(minutes: -10) && _timeElapsed > const Duration(minutes: -23)) {
       // Case 3: Time elapsed is less than or equal to 0
@@ -357,7 +374,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
         ],
       );
     } else {
-    return Lottie.asset('assets/lotties/call.json', height: 45);
+      return Lottie.asset('assets/lotties/call.json', height: 45);
     }
   }
 
