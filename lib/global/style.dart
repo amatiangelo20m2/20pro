@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../api/restaurant_client/lib/api.dart';
+import '../app/core/booking/crud_widget/create_booking.dart';
 
 var globalBlue = Color(0xFF38b6FF);
 
@@ -74,5 +75,15 @@ void showCupertinoAlert(BuildContext context, String title, String message) {
         ],
       );
     },
+  );
+}
+
+void showFormBottomSheet(BuildContext context, BookingDTOStatusEnum bookingStatus) {
+  showModalBottomSheet(
+      elevation: 10,
+      backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
+      context: context,
+      isScrollControlled: true, // Allows modal to adjust to keyboard
+      builder: (context) => CreateBooking()
   );
 }
