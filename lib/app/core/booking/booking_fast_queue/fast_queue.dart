@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
-
 import '../../../../global/style.dart';
 import '../../../../state_manager/restaurant_state_manager.dart';
-import '../booking_card.dart';
+import '../crud_widget/create_booking.dart';
 import 'fast_queue_card.dart';
 
 class FastQueue extends StatefulWidget {
@@ -36,16 +35,27 @@ class _FastQueueState extends State<FastQueue> {
           onRefresh: () async {
             await restaurantStateManager.refresh(DateTime.now());
           },
-          child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: 160),
-            itemCount: groupedBookings.keys.length,
-            itemBuilder: (context, index) {
-              final date = groupedBookings.keys.elementAt(index);
-              final bookings = groupedBookings[date]!;
+          child: Stack(children: [
+            ListView.builder(
+              padding: const EdgeInsets.only(bottom: 160),
+              itemCount: groupedBookings.keys.length,
+              itemBuilder: (context, index) {
+                final date = groupedBookings.keys.elementAt(index);
+                final bookings = groupedBookings[date]!;
 
-              return _buildDateGroup(date, bookings, restaurantStateManager);
-            },
-          ),
+                return _buildDateGroup(date, bookings, restaurantStateManager);
+              },
+            ),
+            Positioned(right: 0, bottom: 0, child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: FloatingActionButton(
+                backgroundColor: getStatusColor(BookingDTOStatusEnum.LISTA_ATTESA),
+                onPressed: () {
+                  showFormBottomSheet(context, BookingDTOStatusEnum.LISTA_ATTESA);
+                },
+                child: const Icon(CupertinoIcons.book, color: Colors.white,),),
+            ))
+          ],)
         );
       },
     );
@@ -81,23 +91,29 @@ class _FastQueueState extends State<FastQueue> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Prenotazioni di ${italianDateFormat.format(date)}'.toUpperCase(),
+              'Lista di Attesa di ${italianDateFormat.format(date)}'.toUpperCase(),
               style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold),
             ),
           ),
           ...bookings.map((booking) {
-            final formDTO = restaurantStateManager.currentBranchForms!.firstWhere(
-                  (form) => form.formCode == booking.formCode,
-            );
-
             return FastQueueCard(
               booking: booking,
             );
           }),
         ],
       ),
+    );
+  }
+
+  void showFormBottomSheet(BuildContext context, BookingDTOStatusEnum bookingStatus) {
+    showModalBottomSheet(
+        elevation: 10,
+        backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
+        context: context,
+        isScrollControlled: true, // Allows modal to adjust to keyboard
+        builder: (context) => CreateBooking()
     );
   }
 }

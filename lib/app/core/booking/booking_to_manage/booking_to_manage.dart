@@ -5,7 +5,7 @@ import 'package:ventipro/api/restaurant_client/lib/api.dart';
 
 import '../../../../global/style.dart';
 import '../../../../state_manager/restaurant_state_manager.dart';
-import '../booking_card.dart';
+import '../booking_confirmed/booking_card.dart';
 
 class BookingManager extends StatefulWidget {
   const BookingManager({super.key});
@@ -87,13 +87,9 @@ class _BookingManagerState extends State<BookingManager> {
             ),
           ),
           ...bookings.map((booking) {
-            final formDTO = restaurantStateManager.currentBranchForms!.firstWhere(
-                  (form) => form.formCode == booking.formCode,
-            );
-
             return ReservationCard(
               booking: booking,
-              formDTO: formDTO,
+              formDTOs: restaurantStateManager.currentBranchForms!,
             );
           }).toList(),
         ],

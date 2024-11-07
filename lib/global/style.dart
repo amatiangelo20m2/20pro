@@ -49,8 +49,12 @@ Color getStatusColor(BookingDTOStatusEnum statusEnum) {
       return CupertinoColors.systemYellow;
     case BookingDTOStatusEnum.RIFIUTATO:
       return CupertinoColors.destructiveRed;
-    case BookingDTOStatusEnum.LISTA_ATTESA:
+    case BookingDTOStatusEnum.ARRIVATO:
       return CupertinoColors.activeBlue;
+    case BookingDTOStatusEnum.NON_ARRIVATO:
+      return CupertinoColors.destructiveRed;
+    case BookingDTOStatusEnum.LISTA_ATTESA:
+      return Colors.blueGrey.shade600;
     case BookingDTOStatusEnum.ELIMINATO:
       return CupertinoColors.black;
     default:
@@ -78,12 +82,14 @@ void showCupertinoAlert(BuildContext context, String title, String message) {
   );
 }
 
-void showFormBottomSheet(BuildContext context, BookingDTOStatusEnum bookingStatus) {
-  showModalBottomSheet(
-      elevation: 10,
-      backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
-      context: context,
-      isScrollControlled: true, // Allows modal to adjust to keyboard
-      builder: (context) => CreateBooking()
-  );
+getFormEmoji(List<FormDTO> formDTOs, BookingDTO booking) {
+  if(formDTOs.isEmpty || booking.formCode == ''){
+    return '';
+  }else{
+    if(formDTOs.where((element) => element.formCode == booking.formCode).isEmpty){
+      return '';
+    }else {
+      return formDTOs.where((element) => element.formCode == booking.formCode).first.outputNameForCustomer;
+    }
+  }
 }

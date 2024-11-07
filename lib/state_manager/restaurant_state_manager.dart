@@ -94,4 +94,36 @@ class RestaurantStateManager extends ChangeNotifier {
         format_yyyy_MM_dd.format(DateTime.now().add(const Duration(days: 30))));
     notifyListeners();
   }
+
+  Future<void> createBooking() async {
+
+    BookingDTO? bookingDTO = await _bookingControllerApi.create(BookingDTO(
+      bookingId: 123,
+      formCode: '',
+      branchCode: currentEmployee!.branchCode!,
+      bookingCode: '',
+      bookingDate: DateTime.now(),
+      timeSlot: TimeSlot(
+        bookingHour: DateTime.now().hour,
+        bookingMinutes: DateTime.now().minute + 1,
+      ),
+      numGuests: 4,
+      status: BookingDTOStatusEnum.LISTA_ATTESA,
+      specialRequests: "Please prepare a high chair.",
+      customer: CustomerDTO(
+        firstName: 'Angelo',
+        lastName: 'Amati',
+        phone: '3454937047',
+        prefix: '39',
+        email: 'amati.angelo90@gmail.com'
+      ),
+      createdAt: DateTime.now(),
+      timeWaitingFastQueueMinutes: 1,
+      bookingSource: BookingDTOBookingSourceEnum.WEB,
+      comingWithDogs: false
+    ));
+
+    refresh(DateTime.now());
+
+  }
 }

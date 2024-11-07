@@ -38,11 +38,6 @@ class _MainScreenState extends State<MainScreen> {
           RestaurantStateManager restaurantStateManager,
           Widget? child) {
         return Scaffold(
-
-          floatingActionButton: _pageIndex == 2 ? FloatingActionButton(
-            backgroundColor: getStatusColor(BookingDTOStatusEnum.LISTA_ATTESA),
-              onPressed: (){},
-            child: Icon(CupertinoIcons.add, color: Colors.white,)) : null,
           bottomNavigationBar: BottomNavigationBar(
             selectedLabelStyle: TextStyle(color: Colors.black),
            unselectedLabelStyle: TextStyle(color: Colors.blueGrey.shade600),

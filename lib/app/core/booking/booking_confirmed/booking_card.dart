@@ -2,18 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
-import '../../../api/restaurant_client/lib/api.dart';
+import 'package:ventipro/api/restaurant_client/lib/api.dart';
 
 class ReservationCard extends StatelessWidget {
   final BookingDTO booking;
-  final FormDTO formDTO;
+  final List<FormDTO> formDTOs;
 
   const ReservationCard({required this.booking,
-    required this.formDTO});
+    required this.formDTOs});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +89,7 @@ class ReservationCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(flex: 3, child: _buildCustomerInfo()),
-              Expanded(flex: 1, child: Text(formDTO.outputNameForCustomer! + '📱🌐', style: TextStyle(fontSize: 20),)),
+              Expanded(flex: 1, child: Text(getFormEmoji(formDTOs, booking))),
               Expanded(flex: 1, child: _buildGuestInfo()),
               Expanded(flex: 2, child: _buildTimeBooking(context)),
               Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.doc_plaintext),)),
@@ -185,7 +184,7 @@ class ReservationCard extends StatelessWidget {
         booking.status!.value.toString().replaceAll('_', ' '),
         style: const TextStyle(
           color: CupertinoColors.white,
-          fontSize: 12,
+          fontSize: 10,
         ),
       ),
     );

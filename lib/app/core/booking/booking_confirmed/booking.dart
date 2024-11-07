@@ -7,7 +7,7 @@ import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
 import '../../../../global/style.dart';
-import '../booking_card.dart';
+import 'booking_card.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -345,8 +345,8 @@ class _BookingScreenState extends State<BookingScreen> {
                   itemCount: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).length,
                   itemBuilder: (context, index) {
                     return ReservationCard(booking: restaurantManager.currentBookings!.where((element) => element.status == currentBookingStatus).toList()[index],
-                      formDTO: restaurantManager.currentBranchForms!.where((element) => element.formCode
-                          == restaurantManager.currentBookings![index].formCode).first,);
+                      formDTOs: restaurantManager
+                          .currentBranchForms!);
                   },
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
@@ -16,7 +17,7 @@ import '../../notification/state_manager/notification_state_manager.dart';
 class FastQueueCard extends StatefulWidget {
   final BookingDTO booking;
 
-  const FastQueueCard({required this.booking});
+  const FastQueueCard({super.key, required this.booking});
 
   @override
   State<FastQueueCard> createState() => _FastQueueCardState();
@@ -25,6 +26,7 @@ class FastQueueCard extends StatefulWidget {
 class _FastQueueCardState extends State<FastQueueCard> {
   Timer? _timer;
   Duration _timeElapsed = Duration.zero;
+  DateTime _targetTime = DateTime.now();
 
   @override
   void initState() {
@@ -33,19 +35,18 @@ class _FastQueueCardState extends State<FastQueueCard> {
   }
 
   void _startTimer() {
-    // Calculate initial time difference
-    final currentTime = DateTime.now();
-    currentTime.add(Duration(minutes: widget.booking.timeWaitingFastQueueMinutes!));
-    _timeElapsed = currentTime.difference(widget.booking.createdAt!);
+    _targetTime  = widget.booking.createdAt!.add(
+      Duration(minutes: widget.booking.timeWaitingFastQueueMinutes!),
+    );
 
-    // Start the timer to update every second
+    _timeElapsed = _targetTime.difference(DateTime.now());
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _timeElapsed -= const Duration(seconds: 1);
-        if (_timeElapsed <= Duration.zero) {
-          // Stop the timer and set _timeElapsed to exactly zero
+        if (_timeElapsed <= const Duration(minutes: -30)) {
           _timer?.cancel();
-          _timeElapsed = Duration.zero;
+          _timeElapsed = const Duration(minutes: -30); // Cap _timeElapsed at -10 minutes
         }
       });
     });
@@ -54,10 +55,12 @@ class _FastQueueCardState extends State<FastQueueCard> {
   String _formatTime(Duration duration) {
     // Format duration to mm:ss
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String minutes = twoDigits(duration.inMinutes.remainder(60));
-    String seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
+    final hours = twoDigits(duration.inHours.remainder(24));
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$hours:$minutes:$seconds";
   }
+
 
   @override
   void dispose() {
@@ -99,13 +102,13 @@ class _FastQueueCardState extends State<FastQueueCard> {
 
   Future<bool?> _confirmReservation(BuildContext context) async {
 
-    widget.booking.status = BookingDTOStatusEnum.CONFERMATO;
+    widget.booking.status = BookingDTOStatusEnum.ARRIVATO;
     _showSnackbar(context, 'Reservation confirmed.');
     return false; // Prevent automatic dismissal
   }
 
   Future<bool?> _cancelReservation(BuildContext context) async {
-    widget.booking.status = BookingDTOStatusEnum.ELIMINATO;
+    widget.booking.status = BookingDTOStatusEnum.NON_ARRIVATO;
     _showSnackbar(context, 'Reservation cancelled.');
     return false; // Prevent automatic dismissal
   }
@@ -113,7 +116,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
   void _showSnackbar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -131,7 +134,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
               color: CupertinoColors.systemGrey.withOpacity(0.2),
               blurRadius: 4.0,
               spreadRadius: 1.0,
-              offset: Offset(0, 2), // changes position of shadow
+              offset: const Offset(0, 2), // changes position of shadow
             ),
           ],
         ),
@@ -142,23 +145,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
               Expanded(flex: 3, child: _buildCustomerInfo()),
               Expanded(
                 flex: 2,
-                child: Column(
-                  children: [
-                    Text(
-                      _formatTime(_timeElapsed), // Display time in mm:ss format
-                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-
-                    Text(
-                      widget.booking.createdAt!.toString(), // Display time in mm:ss format
-                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '${widget.booking.timeWaitingFastQueueMinutes} minuti', // Display time in mm:ss format
-                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+                child: _buildWidgetByElapsedTime(),
               ),
               Expanded(flex: 1, child: _buildGuestInfo()),
               Expanded(flex: 2, child: _buildTimeBooking(context)),
@@ -214,36 +201,12 @@ class _FastQueueCardState extends State<FastQueueCard> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Icon(CupertinoIcons.clock, color: Colors.blueGrey,),
-        Column(
-          children: [
-            Text(
-              ' ${NumberFormat("00").format(widget.booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(widget.booking.timeSlot?.bookingMinutes)}',
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.blueGrey.shade900,
-              ),
-            ),
-            Text(
-              italianDateFormat.format(widget.booking.bookingDate!),
-              style: TextStyle(
-                fontSize: 5,
-                color: Colors.blueGrey.shade900,
-              ),
-            ),
-            Text(
-              widget.booking.bookingDate!.toLocal().toString(),
-              style: TextStyle(
-                fontSize: 5,
-                color: Colors.blueGrey.shade900,
-              ),
-            ),
-            Text(
-              widget.booking.bookingDate!.toUtc().toString(),
-              style: const TextStyle(
-                fontSize: 5,
-              ),
-            ),
-          ],
+        Text(
+          ' ${NumberFormat("00").format(widget.booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(widget.booking.timeSlot?.bookingMinutes)}',
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.blueGrey.shade900,
+          ),
         ),
       ],
     );
@@ -261,7 +224,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
         widget.booking.status!.value.toString().replaceAll('_', ' '),
         style: const TextStyle(
           color: CupertinoColors.white,
-          fontSize: 12,
+          fontSize: 10,
         ),
       ),
     );
@@ -313,7 +276,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
               right: 0,
               child: IconButton(onPressed: () {
 
-              }, icon: Icon(CupertinoIcons.phone)),
+              }, icon: const Icon(CupertinoIcons.phone)),
             ),
           ],
         ),
@@ -325,7 +288,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
                   .updateBooking(booking);
               Navigator.pop(context, null);
             },
-            child: Text('Conferma prenotazione'),
+            child: const Text('Conferma prenotazione'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -335,7 +298,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
               Navigator.pop(context, null);
 
             },
-            child: Text('Segna come arrivato'),
+            child: const Text('Segna come arrivato'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -345,7 +308,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
               Navigator.pop(context, null);
 
             },
-            child: Text('Rifiuta prenotazione'),
+            child: const Text('Rifiuta prenotazione'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
@@ -354,7 +317,7 @@ class _FastQueueCardState extends State<FastQueueCard> {
                   .updateBooking(booking);
               Navigator.pop(context, null);
             },
-            child: Text('Cancella'),
+            child: const Text('Cancella'),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
@@ -367,4 +330,35 @@ class _FastQueueCardState extends State<FastQueueCard> {
       ),
     );
   }
+
+  Widget _buildWidgetByElapsedTime() {
+    if (_timeElapsed > const Duration(seconds: 3)) {
+      // Case 1: Time elapsed is greater than 3 seconds
+      return Text(
+        _formatTime(_timeElapsed), // Display time in mm:ss format
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+      );
+    } else if (_timeElapsed > Duration.zero && _timeElapsed <= const Duration(seconds: 3)) {
+      // Case 2: Time elapsed is between 0 and 3 seconds
+      return Lottie.asset('assets/lotties/321go.json', height: 45);
+    } else if(_timeElapsed < const Duration(minutes: -10) && _timeElapsed > const Duration(minutes: -23)) {
+      // Case 3: Time elapsed is less than or equal to 0
+      return Column(
+        children: [
+          Lottie.asset('assets/lotties/call_late.json', height: 45),
+           Text('In ritardo di ${_timeElapsed.inMinutes * -1} minuti', style: const TextStyle(fontSize: 5),)
+        ],
+      );
+    }else if(_timeElapsed < const Duration(minutes: -23)){
+      return Column(
+        children: [
+          Lottie.asset('assets/lotties/call_too_late.json', height: 45),
+          const Text('Cliente scomparso', style: TextStyle(fontSize: 5),)
+        ],
+      );
+    } else {
+    return Lottie.asset('assets/lotties/call.json', height: 45);
+    }
+  }
+
 }
