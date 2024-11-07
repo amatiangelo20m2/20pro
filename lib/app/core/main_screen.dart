@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -100,7 +99,6 @@ class _MainScreenState extends State<MainScreen> {
                   subtitle: Text('xxx'),
                   leading: Icon(CupertinoIcons.chat_bubble_2),
                 ),
-
               ],
             ),
           ),

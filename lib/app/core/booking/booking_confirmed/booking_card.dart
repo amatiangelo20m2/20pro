@@ -223,12 +223,14 @@ class ReservationCard extends StatelessWidget {
         actions: [
           CupertinoActionSheetAction(
             onPressed: () {
-              booking.status = BookingDTOStatusEnum.CONFERMATO;
               Provider.of<RestaurantStateManager>(context, listen: false)
-                  .updateBooking(booking);
+                  .updateBooking(BookingDTO(
+                bookingCode: booking.bookingCode,
+                status: BookingDTOStatusEnum.CONFERMATO
+              ));
               Navigator.pop(context, null);
             },
-            child: Text('Conferma prenotazione'),
+            child: const Text('Conferma prenotazione'),
           ),
           CupertinoActionSheetAction(
             onPressed: () {
