@@ -16,7 +16,6 @@ dependencies:
   firebase_core: ^2.27.1
   firebase_auth: ^4.17.9
   firebase_messaging: ^14.7.21
-  flutter_spinkit: ^5.2.1
   device_info_plus: ^10.1.2
   openapi_generator_annotations: 4.13.1
   provider: ^6.1.2
@@ -38,6 +37,7 @@ dependencies:
   platform_device_id: ^1.0.1
   font_awesome_flutter: ^10.8.0
   persistent_bottom_nav_bar: ^6.2.1
+  audioplayers: ^6.1.0
 
   
 dev_dependencies:
@@ -59,3 +59,4 @@ flutter:
     - assets/images/
     - assets/lotties/
     - assets/svg/
+    - assets/sounds/

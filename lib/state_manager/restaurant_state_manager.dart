@@ -73,6 +73,7 @@ class RestaurantStateManager extends ChangeNotifier {
     refresh(DateTime.now());
   }
 
+
   Future<void> selectBookingForCurrentDay(DateTime dateTime) async {
     _currentBookings = await _bookingControllerApi
         .retrieveBookingByBranchCodeAndDate(_currentEmployee!.branchCode!, format_yyyy_MM_dd.format(dateTime));

@@ -66,6 +66,21 @@ void main() {
       // TODO
     });
 
+    // DateTime createdAt
+    test('to test the property `createdAt`', () async {
+      // TODO
+    });
+
+    // int timeWaitingFastQueueMinutes
+    test('to test the property `timeWaitingFastQueueMinutes`', () async {
+      // TODO
+    });
+
+    // String bookingSource
+    test('to test the property `bookingSource`', () async {
+      // TODO
+    });
+
     // bool comingWithDogs
     test('to test the property `comingWithDogs`', () async {
       // TODO

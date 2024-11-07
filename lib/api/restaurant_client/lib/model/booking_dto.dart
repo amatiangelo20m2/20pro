@@ -23,6 +23,9 @@ class BookingDTO {
     this.status,
     this.specialRequests,
     this.customer,
+    this.createdAt,
+    this.timeWaitingFastQueueMinutes,
+    this.bookingSource,
     this.comingWithDogs,
   });
 
@@ -106,6 +109,24 @@ class BookingDTO {
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
+  DateTime? createdAt;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  int? timeWaitingFastQueueMinutes;
+
+  BookingDTOBookingSourceEnum? bookingSource;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
   bool? comingWithDogs;
 
   @override
@@ -120,6 +141,9 @@ class BookingDTO {
     other.status == status &&
     other.specialRequests == specialRequests &&
     other.customer == customer &&
+    other.createdAt == createdAt &&
+    other.timeWaitingFastQueueMinutes == timeWaitingFastQueueMinutes &&
+    other.bookingSource == bookingSource &&
     other.comingWithDogs == comingWithDogs;
 
   @override
@@ -135,10 +159,13 @@ class BookingDTO {
     (status == null ? 0 : status!.hashCode) +
     (specialRequests == null ? 0 : specialRequests!.hashCode) +
     (customer == null ? 0 : customer!.hashCode) +
+    (createdAt == null ? 0 : createdAt!.hashCode) +
+    (timeWaitingFastQueueMinutes == null ? 0 : timeWaitingFastQueueMinutes!.hashCode) +
+    (bookingSource == null ? 0 : bookingSource!.hashCode) +
     (comingWithDogs == null ? 0 : comingWithDogs!.hashCode);
 
   @override
-  String toString() => 'BookingDTO[bookingId=$bookingId, formCode=$formCode, branchCode=$branchCode, bookingCode=$bookingCode, bookingDate=$bookingDate, timeSlot=$timeSlot, numGuests=$numGuests, status=$status, specialRequests=$specialRequests, customer=$customer, comingWithDogs=$comingWithDogs]';
+  String toString() => 'BookingDTO[bookingId=$bookingId, formCode=$formCode, branchCode=$branchCode, bookingCode=$bookingCode, bookingDate=$bookingDate, timeSlot=$timeSlot, numGuests=$numGuests, status=$status, specialRequests=$specialRequests, customer=$customer, createdAt=$createdAt, timeWaitingFastQueueMinutes=$timeWaitingFastQueueMinutes, bookingSource=$bookingSource, comingWithDogs=$comingWithDogs]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -192,6 +219,21 @@ class BookingDTO {
     } else {
       json[r'customer'] = null;
     }
+    if (this.createdAt != null) {
+      json[r'createdAt'] = this.createdAt!.toUtc().toIso8601String();
+    } else {
+      json[r'createdAt'] = null;
+    }
+    if (this.timeWaitingFastQueueMinutes != null) {
+      json[r'timeWaitingFastQueueMinutes'] = this.timeWaitingFastQueueMinutes;
+    } else {
+      json[r'timeWaitingFastQueueMinutes'] = null;
+    }
+    if (this.bookingSource != null) {
+      json[r'bookingSource'] = this.bookingSource;
+    } else {
+      json[r'bookingSource'] = null;
+    }
     if (this.comingWithDogs != null) {
       json[r'comingWithDogs'] = this.comingWithDogs;
     } else {
@@ -229,6 +271,9 @@ class BookingDTO {
         status: BookingDTOStatusEnum.fromJson(json[r'status']),
         specialRequests: mapValueOfType<String>(json, r'specialRequests'),
         customer: CustomerDTO.fromJson(json[r'customer']),
+        createdAt: mapDateTime(json, r'createdAt', r''),
+        timeWaitingFastQueueMinutes: mapValueOfType<int>(json, r'timeWaitingFastQueueMinutes'),
+        bookingSource: BookingDTOBookingSourceEnum.fromJson(json[r'bookingSource']),
         comingWithDogs: mapValueOfType<bool>(json, r'comingWithDogs'),
       );
     }
@@ -299,7 +344,8 @@ class BookingDTOStatusEnum {
   static const ARRIVATO = BookingDTOStatusEnum._(r'ARRIVATO');
   static const NON_ARRIVATO = BookingDTOStatusEnum._(r'NON_ARRIVATO');
   static const RIFIUTATO = BookingDTOStatusEnum._(r'RIFIUTATO');
-  static const FILA_FAST = BookingDTOStatusEnum._(r'FILA_FAST');
+  static const LISTA_ATTESA = BookingDTOStatusEnum._(r'LISTA_ATTESA');
+  static const AVVISATO_LISTA_ATTESA = BookingDTOStatusEnum._(r'AVVISATO_LISTA_ATTESA');
   static const ELIMINATO = BookingDTOStatusEnum._(r'ELIMINATO');
 
   /// List of all possible values in this [enum][BookingDTOStatusEnum].
@@ -310,7 +356,8 @@ class BookingDTOStatusEnum {
     ARRIVATO,
     NON_ARRIVATO,
     RIFIUTATO,
-    FILA_FAST,
+    LISTA_ATTESA,
+    AVVISATO_LISTA_ATTESA,
     ELIMINATO,
   ];
 
@@ -356,7 +403,8 @@ class BookingDTOStatusEnumTypeTransformer {
         case r'ARRIVATO': return BookingDTOStatusEnum.ARRIVATO;
         case r'NON_ARRIVATO': return BookingDTOStatusEnum.NON_ARRIVATO;
         case r'RIFIUTATO': return BookingDTOStatusEnum.RIFIUTATO;
-        case r'FILA_FAST': return BookingDTOStatusEnum.FILA_FAST;
+        case r'LISTA_ATTESA': return BookingDTOStatusEnum.LISTA_ATTESA;
+        case r'AVVISATO_LISTA_ATTESA': return BookingDTOStatusEnum.AVVISATO_LISTA_ATTESA;
         case r'ELIMINATO': return BookingDTOStatusEnum.ELIMINATO;
         default:
           if (!allowNull) {
@@ -369,6 +417,83 @@ class BookingDTOStatusEnumTypeTransformer {
 
   /// Singleton [BookingDTOStatusEnumTypeTransformer] instance.
   static BookingDTOStatusEnumTypeTransformer? _instance;
+}
+
+
+
+class BookingDTOBookingSourceEnum {
+  /// Instantiate a new enum with the provided [value].
+  const BookingDTOBookingSourceEnum._(this.value);
+
+  /// The underlying value of this enum member.
+  final String value;
+
+  @override
+  String toString() => value;
+
+  String toJson() => value;
+
+  static const WEB = BookingDTOBookingSourceEnum._(r'WEB');
+  static const APP_CUSTOMER = BookingDTOBookingSourceEnum._(r'APP_CUSTOMER');
+  static const APP = BookingDTOBookingSourceEnum._(r'APP');
+
+  /// List of all possible values in this [enum][BookingDTOBookingSourceEnum].
+  static const values = <BookingDTOBookingSourceEnum>[
+    WEB,
+    APP_CUSTOMER,
+    APP,
+  ];
+
+  static BookingDTOBookingSourceEnum? fromJson(dynamic value) => BookingDTOBookingSourceEnumTypeTransformer().decode(value);
+
+  static List<BookingDTOBookingSourceEnum> listFromJson(dynamic json, {bool growable = false,}) {
+    final result = <BookingDTOBookingSourceEnum>[];
+    if (json is List && json.isNotEmpty) {
+      for (final row in json) {
+        final value = BookingDTOBookingSourceEnum.fromJson(row);
+        if (value != null) {
+          result.add(value);
+        }
+      }
+    }
+    return result.toList(growable: growable);
+  }
+}
+
+/// Transformation class that can [encode] an instance of [BookingDTOBookingSourceEnum] to String,
+/// and [decode] dynamic data back to [BookingDTOBookingSourceEnum].
+class BookingDTOBookingSourceEnumTypeTransformer {
+  factory BookingDTOBookingSourceEnumTypeTransformer() => _instance ??= const BookingDTOBookingSourceEnumTypeTransformer._();
+
+  const BookingDTOBookingSourceEnumTypeTransformer._();
+
+  String encode(BookingDTOBookingSourceEnum data) => data.value;
+
+  /// Decodes a [dynamic value][data] to a BookingDTOBookingSourceEnum.
+  ///
+  /// If [allowNull] is true and the [dynamic value][data] cannot be decoded successfully,
+  /// then null is returned. However, if [allowNull] is false and the [dynamic value][data]
+  /// cannot be decoded successfully, then an [UnimplementedError] is thrown.
+  ///
+  /// The [allowNull] is very handy when an API changes and a new enum value is added or removed,
+  /// and users are still using an old app with the old code.
+  BookingDTOBookingSourceEnum? decode(dynamic data, {bool allowNull = true}) {
+    if (data != null) {
+      switch (data) {
+        case r'WEB': return BookingDTOBookingSourceEnum.WEB;
+        case r'APP_CUSTOMER': return BookingDTOBookingSourceEnum.APP_CUSTOMER;
+        case r'APP': return BookingDTOBookingSourceEnum.APP;
+        default:
+          if (!allowNull) {
+            throw ArgumentError('Unknown enum value to decode: $data');
+          }
+      }
+    }
+    return null;
+  }
+
+  /// Singleton [BookingDTOBookingSourceEnumTypeTransformer] instance.
+  static BookingDTOBookingSourceEnumTypeTransformer? _instance;
 }
 
 

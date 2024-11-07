@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:ventipro/app/core/main_screen.dart';
+
+import '../app/core/main_screen.dart';
 import '../app/login/login_screen.dart';
-import '../global/style.dart';
-import '../state_manager/restaurant_state_manager.dart'; // Import the state manager
+import '../state_manager/restaurant_state_manager.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -19,40 +20,27 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
     _loadData();
+
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 2200),
     )..forward();
+
 
   }
 
-  Future<void> _loadData() async {
-    try{
-      await Future.delayed(const Duration(seconds: 3));
 
-      // Access the state manager
-      final stateManager = Provider.of<RestaurantStateManager>(context, listen: false);
-      if (stateManager.currentEmployee != null) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
-      } else {
-        // User is not logged in, navigate to the login page
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-      }
-    }catch(e){
-      print(e);
-    }
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
 
   }
 
   @override
   void dispose() {
-    // Dispose of animation controller when the widget is disposed
     _controller.dispose();
     super.dispose();
   }
@@ -67,8 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             Image.asset('assets/images/logo.png', width: 130),
             const SizedBox(height: 20),
-            SpinKitThreeBounce(
-                color: globalBlue, size: 30.0, controller: _controller),
+            const CupertinoActivityIndicator(color: Colors.white,)
           ],
         ),
       ),

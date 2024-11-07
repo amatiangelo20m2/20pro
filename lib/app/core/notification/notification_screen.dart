@@ -103,6 +103,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   String _formatDate(String date) {
+    if(date.isEmpty){
+      return 'Illegal date';
+    }
     final DateTime parsedDate = DateTime.parse(date);
     return DateFormat('dd MMM yy\n    HH:mm').format(parsedDate);
   }

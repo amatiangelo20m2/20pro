@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/app/core/employee/reports/state_manager/employee_state_manager.dart';
 import 'package:ventipro/global/style.dart';
 import '../../../../api/restaurant_client/lib/api.dart';
-import '../../../../state_manager/restaurant_state_manager.dart';
 import 'employee_create_update/employee_screen.dart';
 import 'excel/excel_report_exporter.dart';
 
@@ -184,9 +182,7 @@ class _ReportEmployeePresenceState extends State<ReportEmployeePresence> {
                       return const Padding(
                         padding: EdgeInsets.all(58.0),
                         child: Center(
-                            child: SpinKitSpinningLines(color:  Colors.blueGrey,
-
-                            )
+                            child: CupertinoActivityIndicator()
                         ),
                       );
                     }else if(snapshot.connectionState == ConnectionState.done){

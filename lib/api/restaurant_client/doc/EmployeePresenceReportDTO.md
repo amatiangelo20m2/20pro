@@ -14,10 +14,10 @@ Name | Type | Description | Notes
 **date** | [**DateTime**](DateTime.md) |  | [optional] 
 **workedHours** | **int** |  | [optional] 
 **note** | **String** |  | [optional] 
-**presentAtLunch** | **bool** |  | [optional] 
-**presentAtDinner** | **bool** |  | [optional] 
 **illness** | **bool** |  | [optional] 
 **holiday** | **bool** |  | [optional] 
+**presentAtLunch** | **bool** |  | [optional] 
+**presentAtDinner** | **bool** |  | [optional] 
 **rest** | **bool** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

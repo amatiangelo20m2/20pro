@@ -80,9 +80,9 @@ class _BookingManagerState extends State<BookingManager> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Prenotazioni di ${italianDateFormat.format(date).toUpperCase()}',
+              'Prenotazioni di ${italianDateFormat.format(date)}'.toUpperCase(),
               style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold),
             ),
           ),

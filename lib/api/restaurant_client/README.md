@@ -54,7 +54,7 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://192.168.1.4:64145/restaurantservice*
+All URIs are relative to *http://192.168.1.4:47711/restaurantservice*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

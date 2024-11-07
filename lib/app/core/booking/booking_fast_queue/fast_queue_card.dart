@@ -1,28 +1,78 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
-import '../../../api/restaurant_client/lib/api.dart';
 
-class ReservationCard extends StatelessWidget {
+import 'package:ventipro/api/restaurant_client/lib/api.dart';
+
+import '../../notification/model/notification_entity.dart';
+import '../../notification/state_manager/notification_state_manager.dart';
+
+class FastQueueCard extends StatefulWidget {
   final BookingDTO booking;
-  final FormDTO formDTO;
 
-  const ReservationCard({required this.booking,
-    required this.formDTO});
+  const FastQueueCard({required this.booking});
+
+  @override
+  State<FastQueueCard> createState() => _FastQueueCardState();
+}
+
+class _FastQueueCardState extends State<FastQueueCard> {
+  Timer? _timer;
+  Duration _timeElapsed = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    // Calculate initial time difference
+    final currentTime = DateTime.now();
+    currentTime.add(Duration(minutes: widget.booking.timeWaitingFastQueueMinutes!));
+    _timeElapsed = currentTime.difference(widget.booking.createdAt!);
+
+    // Start the timer to update every second
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _timeElapsed -= const Duration(seconds: 1);
+        if (_timeElapsed <= Duration.zero) {
+          // Stop the timer and set _timeElapsed to exactly zero
+          _timer?.cancel();
+          _timeElapsed = Duration.zero;
+        }
+      });
+    });
+  }
+
+  String _formatTime(Duration duration) {
+    // Format duration to mm:ss
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String minutes = twoDigits(duration.inMinutes.remainder(60));
+    String seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _showSortMenu(context, booking);
+        _showSortMenu(context, widget.booking);
       },
       child: Dismissible(
-        key: Key(booking.bookingCode.toString()),
+        key: Key(widget.booking.bookingCode.toString()),
         direction: DismissDirection.horizontal,
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
@@ -49,13 +99,13 @@ class ReservationCard extends StatelessWidget {
 
   Future<bool?> _confirmReservation(BuildContext context) async {
 
-    booking.status = BookingDTOStatusEnum.CONFERMATO;
+    widget.booking.status = BookingDTOStatusEnum.CONFERMATO;
     _showSnackbar(context, 'Reservation confirmed.');
     return false; // Prevent automatic dismissal
   }
 
   Future<bool?> _cancelReservation(BuildContext context) async {
-    booking.status = BookingDTOStatusEnum.ELIMINATO;
+    widget.booking.status = BookingDTOStatusEnum.ELIMINATO;
     _showSnackbar(context, 'Reservation cancelled.');
     return false; // Prevent automatic dismissal
   }
@@ -90,12 +140,38 @@ class ReservationCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(flex: 3, child: _buildCustomerInfo()),
-              Expanded(flex: 1, child: Text(formDTO.outputNameForCustomer! + '📱🌐', style: TextStyle(fontSize: 20),)),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: [
+                    Text(
+                      _formatTime(_timeElapsed), // Display time in mm:ss format
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+
+                    Text(
+                      widget.booking.createdAt!.toString(), // Display time in mm:ss format
+                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '${widget.booking.timeWaitingFastQueueMinutes} minuti', // Display time in mm:ss format
+                      style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(flex: 1, child: _buildGuestInfo()),
               Expanded(flex: 2, child: _buildTimeBooking(context)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.doc_plaintext),)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green,),)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.settings_solid, color: Colors.blueGrey,),)),
+
+              Expanded(flex: 1,
+                child: Consumer<NotificationStateManager>(
+                  builder: (BuildContext context, NotificationStateManager value, Widget? child) {
+                    return IconButton(onPressed: () {
+
+                      value.addNotification(NotificationModel(title: 'sdffds', body: 'dsffsd', dateReceived: '2024-12-12'));
+                    }, icon: const Icon(CupertinoIcons.paperplane),);
+                  },
+                ),),
               Expanded(flex: 2, child: _buildStatusButton(context)),
             ],
           ),
@@ -113,14 +189,14 @@ class ReservationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                booking.customer?.firstName ?? '',
+                widget.booking.customer?.firstName ?? '',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.blueGrey.shade900,
                 ),
               ),
               Text(
-                booking.customer?.lastName ?? '',
+                widget.booking.customer?.lastName ?? '',
                 style: TextStyle(
                   fontSize: 11,
                   color: Colors.blueGrey.shade900,
@@ -141,28 +217,28 @@ class ReservationCard extends StatelessWidget {
         Column(
           children: [
             Text(
-              ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
+              ' ${NumberFormat("00").format(widget.booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(widget.booking.timeSlot?.bookingMinutes)}',
               style: TextStyle(
                 fontSize: 13,
                 color: Colors.blueGrey.shade900,
               ),
             ),
             Text(
-              italianDateFormat.format(booking.bookingDate!),
+              italianDateFormat.format(widget.booking.bookingDate!),
               style: TextStyle(
                 fontSize: 5,
                 color: Colors.blueGrey.shade900,
               ),
             ),
             Text(
-              booking.bookingDate!.toLocal().toString(),
+              widget.booking.bookingDate!.toLocal().toString(),
               style: TextStyle(
                 fontSize: 5,
                 color: Colors.blueGrey.shade900,
               ),
             ),
             Text(
-              booking.bookingDate!.toUtc().toString(),
+              widget.booking.bookingDate!.toUtc().toString(),
               style: const TextStyle(
                 fontSize: 5,
               ),
@@ -176,13 +252,13 @@ class ReservationCard extends StatelessWidget {
   CupertinoButton _buildStatusButton(BuildContext context) {
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      color: getStatusColor(booking.status!),
+      color: getStatusColor(widget.booking.status!),
       borderRadius: BorderRadius.circular(8),
       onPressed: () {
 
       },
       child: Text(
-        booking.status!.value.toString().replaceAll('_', ' '),
+        widget.booking.status!.value.toString().replaceAll('_', ' '),
         style: const TextStyle(
           color: CupertinoColors.white,
           fontSize: 12,
@@ -197,7 +273,7 @@ class ReservationCard extends StatelessWidget {
         Icon(CupertinoIcons.person_2, color: Colors.blueGrey.shade900),
         const SizedBox(width: 5),
         Text(
-          ' ${booking.numGuests ?? 0}',
+          ' ${widget.booking.numGuests ?? 0}',
           style: const TextStyle(
             fontSize: 13,
             color: CupertinoColors.label,

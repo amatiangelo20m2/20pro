@@ -26,13 +26,25 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _branchCodeController = TextEditingController();
 
   MobileDeviceDetails mdd = MobileDeviceDetails();
-  bool _isLoading = false; // Loading state
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _fetchDeviceInfo();
     _retrieveFcmToken();
+    _checkIfUserAlreadyLoggedIn();
+  }
+
+
+  Future<void> _checkIfUserAlreadyLoggedIn() async {
+    print('CCC');
+    var employeeDTO = await Provider.of<RestaurantStateManager>(context, listen: false).currentEmployee;
+    if(employeeDTO != null){
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    }
   }
 
   Future<void> _retrieveFcmToken() async {
@@ -83,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
         builder:
             (BuildContext context, RestaurantStateManager value, Widget? child) {
           return CupertinoPageScaffold(
+
             child: Stack(
               children: [
                 Center(
@@ -154,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_branchCodeController.text.isEmpty ||
         _usernameController.text.isEmpty ||
         _passwordController.text.isEmpty) {
-      _showCupertinoAlert(context, 'Errore', 'I campi del form sono obbligatori');
+      showCupertinoAlert(context, 'Errore', 'I campi del form sono obbligatori');
       return; // Exit the function if validation fails
     }
 
@@ -176,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
           mdd);
 
       if (response.statusCode == 202) {
-        _showCupertinoAlert(context, 'Info', 'bravo');
+        showCupertinoAlert(context, 'Info', 'bravo');
 
         if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
           EmployeeDTO employeeDTO = await Provider.of<RestaurantStateManager>(context, listen: false)
@@ -188,42 +201,21 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         }else{
-          _showCupertinoAlert(context, 'Error', 'Non sono riuscito a decodificare oggetto in entrata. Contatta supporto');
+          showCupertinoAlert(context, 'Error', 'Non sono riuscito a decodificare oggetto in entrata. Contatta supporto');
         }
 
-
       } else if (response.statusCode == 204) {
-        _showCupertinoAlert(context, 'Error', 'User not found');
+        showCupertinoAlert(context, 'Error', 'User not found');
       } else if (response.statusCode == 401) {
-        _showCupertinoAlert(context, 'Error', 'Incorrect password');
+        showCupertinoAlert(context, 'Error', 'Incorrect password');
       } else {
-        _showCupertinoAlert(context, 'Error', 'Errore generico');
+        showCupertinoAlert(context, 'Error', 'Errore generico');
       }
     } catch (e) {
-      _showCupertinoAlert(context, 'Error', 'An error occurred: $e');
+      showCupertinoAlert(context, 'Error', 'An error occurred: $e');
     } finally {
-      setState(() => _isLoading = false); // Hide loading indicator
+      setState(() => _isLoading = false);
     }
-  }
-
-  void _showCupertinoAlert(BuildContext context, String title, String message) {
-    showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<String> _decodeBodyBytes(Response response) async {
@@ -232,4 +224,5 @@ class _LoginPageState extends State<LoginPage> {
         ? response.bodyBytes.isEmpty ? '' : utf8.decode(response.bodyBytes)
         : response.body;
   }
+
 }

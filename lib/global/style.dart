@@ -1,6 +1,10 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../api/restaurant_client/lib/api.dart';
 
 var globalBlue = Color(0xFF38b6FF);
 
@@ -34,4 +38,41 @@ getItalianMonthAbbreviation(monthNumber) {
   }
 
   return italianMonths[monthNumber - 1];
+}
+
+Color getStatusColor(BookingDTOStatusEnum statusEnum) {
+  switch (statusEnum) {
+    case BookingDTOStatusEnum.CONFERMATO:
+      return CupertinoColors.activeGreen;
+    case BookingDTOStatusEnum.IN_ATTESA:
+      return CupertinoColors.systemYellow;
+    case BookingDTOStatusEnum.RIFIUTATO:
+      return CupertinoColors.destructiveRed;
+    case BookingDTOStatusEnum.LISTA_ATTESA:
+      return CupertinoColors.activeBlue;
+    case BookingDTOStatusEnum.ELIMINATO:
+      return CupertinoColors.black;
+    default:
+      return CupertinoColors.systemGrey;
+  }
+}
+
+void showCupertinoAlert(BuildContext context, String title, String message) {
+  showCupertinoDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

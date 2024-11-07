@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:ventipro/app/core/booking/booking_fast_queue/fast_queue.dart';
+import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'booking/booking_confirmed/booking.dart';
 import 'booking/booking_processed/booking_processed.dart';
 import 'booking/booking_to_manage/booking_to_manage.dart';
-import 'booking/edited_by_customer.dart';
+import 'booking/edited_by_customer/edited_by_customer.dart';
 import 'notification/notification_screen.dart';
 import 'notification/state_manager/notification_state_manager.dart';
 
@@ -37,7 +39,13 @@ class _MainScreenState extends State<MainScreen> {
           Widget? child) {
         return Scaffold(
 
+          floatingActionButton: _pageIndex == 2 ? FloatingActionButton(
+            backgroundColor: getStatusColor(BookingDTOStatusEnum.LISTA_ATTESA),
+              onPressed: (){},
+            child: Icon(CupertinoIcons.add, color: Colors.white,)) : null,
           bottomNavigationBar: BottomNavigationBar(
+            selectedLabelStyle: TextStyle(color: Colors.black),
+           unselectedLabelStyle: TextStyle(color: Colors.blueGrey.shade600),
            onTap: (index){
               setState(() {
                 _pageIndex = index;
@@ -47,32 +55,32 @@ class _MainScreenState extends State<MainScreen> {
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/calendar.svg',
                 label: BookingDTOStatusEnum.CONFERMATO.value,
-                badgeColor: Colors.green,
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.CONFERMATO).length.toString(),
+                badgeColor: getStatusColor(BookingDTOStatusEnum.CONFERMATO),
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.CONFERMATO).length,
               ),
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/hourglass.svg',
                 label: BookingDTOStatusEnum.IN_ATTESA.value,
-                badgeColor: CupertinoColors.systemYellow,
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.IN_ATTESA).length.toString(),
+                badgeColor: getStatusColor(BookingDTOStatusEnum.IN_ATTESA),
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.IN_ATTESA).length,
               ),
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/fast_queue.svg',
-                label: BookingDTOStatusEnum.FILA_FAST.value,
-                badgeColor: Colors.pink,
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.FILA_FAST).length.toString(),
+                label: BookingDTOStatusEnum.LISTA_ATTESA.value,
+                badgeColor: getStatusColor(BookingDTOStatusEnum.LISTA_ATTESA),
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.LISTA_ATTESA).length,
               ),
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/booking_edited.svg',
-                label: 'Fast Track',
+                label: BookingDTOStatusEnum.MODIFICATO_DA_UTENTE.value,
                 badgeColor: Colors.purple,
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length.toString(),
+                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length,
               ),
               _buildBottomNavigationBarItem(
                 svgPath: 'assets/svg/booking_done.svg',
                 label: 'Processate',
                 badgeColor: Colors.blue,
-                badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.MODIFICATO_DA_UTENTE).length.toString(),
+                badgeCount: 0,
               ),
           ],),
           drawer: const Drawer(
@@ -113,10 +121,14 @@ class _MainScreenState extends State<MainScreen> {
                     builder: (BuildContext context, NotificationStateManager value, Widget? child) {
                       return IconButton(onPressed: () {
                         Navigator.pushNamed(context, NotificationsPage.routeName);
-                      }, icon: badges.Badge(
-                          badgeContent: Text(value.notifications.length.toString(), style: TextStyle(color: Colors.white),),
-                          position: badges.BadgePosition.topEnd(),
-                          child: const Icon(CupertinoIcons.bell))
+                      }, icon: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: badges.Badge(
+                          showBadge: value.notifications.isNotEmpty,
+                            badgeContent: Text(value.notifications.length.toString(), style: const TextStyle(color: Colors.white, fontSize: 11),),
+                            position: badges.BadgePosition.topEnd(),
+                            child: value.notifications.isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : Icon(CupertinoIcons.bell)),
+                      )
                       );
                     },
                   ),
@@ -124,15 +136,11 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/logo_20_black.svg',
-                      width: 70,
-                    ),
-                  ],
+                SvgPicture.asset(
+                  'assets/svg/logo_20_black.svg',
+                  width: 70,
                 ),
                 FloatingActionButton(
                   mini: true,
@@ -143,6 +151,7 @@ class _MainScreenState extends State<MainScreen> {
                   backgroundColor: Colors.green,
                   child: Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30,),
                 ),
+
               ],
             ),
           ),
@@ -175,12 +184,12 @@ class _MainScreenState extends State<MainScreen> {
     required String svgPath,
     required String label,
     required Color badgeColor,
-    required String badgeCount,
+    required int badgeCount,
 
   }) {
     return BottomNavigationBarItem(
-
       icon: badges.Badge(
+        showBadge: badgeCount > 0,
         badgeStyle: badges.BadgeStyle(badgeColor: badgeColor),
         badgeContent: Text(
           badgeCount.toString(),

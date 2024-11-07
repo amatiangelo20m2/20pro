@@ -82,8 +82,8 @@ class _20PRO extends StatelessWidget {
       child: MaterialApp(
         navigatorKey: navigatorKey, // Make sure to add the navigator key here
         supportedLocales: const [
-          Locale('en', ''), // English
-          Locale('it', ''), // Italian
+          Locale('en', ''),
+          Locale('it', ''),
         ],
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
@@ -98,6 +98,7 @@ class _20PRO extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
           fontFamily: 'Helvetica',
+
         ),
         home: SplashScreen(),
       ),
