@@ -4,13 +4,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
+import 'package:ventipro/app/core/booking/crud_widget/create_booking_confermato.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'package:vibration/vibration.dart';
 import '../../../../global/style.dart';
-import '../crud_widget/create_booking.dart';
+import '../crud_widget/create_booking_lista_attesa.dart';
 import 'booking_card.dart';
 
 class BookingScreen extends StatefulWidget {
+
   const BookingScreen({super.key});
 
   @override
@@ -508,9 +510,7 @@ class _BookingScreenState extends State<BookingScreen> {
         backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
         context: context,
         isScrollControlled: true, // Allows modal to adjust to keyboard
-        builder: (context) => CreateBooking()
+        builder: (context) => const CreateBookingStatusConfirmed()
     );
   }
-
-
 }

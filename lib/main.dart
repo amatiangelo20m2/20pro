@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'app/core/customer/customer_state_manager.dart';
 import 'app/core/employee/reports/state_manager/employee_state_manager.dart';
 import 'app/core/notification/model/notification_entity.dart';
 import 'app/core/notification/state_manager/notification_state_manager.dart';
@@ -78,6 +79,7 @@ class _20PRO extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => RestaurantStateManager(),),
         ChangeNotifierProvider(create: (context) => NotificationStateManager()),
         ChangeNotifierProvider(create: (context) => EmployeeStateManager()),
+        ChangeNotifierProvider(create: (context) => CustomerStateManager()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey, // Make sure to add the navigator key here

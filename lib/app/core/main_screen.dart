@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:ventipro/app/core/booking/booking_fast_queue/fast_queue.dart';
+import 'package:ventipro/app/core/customer/customer_screen.dart';
 import 'package:ventipro/global/style.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 import 'booking/booking_confirmed/booking.dart';
@@ -40,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
           bottomNavigationBar: BottomNavigationBar(
             selectedItemColor: Colors.blueGrey,
             unselectedItemColor: Colors.grey,
-           selectedLabelStyle: TextStyle(fontSize: 8),
+           selectedLabelStyle: const TextStyle(fontSize: 8),
            unselectedFontSize: 7,
            onTap: (index){
               setState(() {
@@ -81,20 +82,23 @@ class _MainScreenState extends State<MainScreen> {
                 badgeCount: restaurantStateManager.allBookings!.where((element) => element.status == BookingDTOStatusEnum.ARRIVATO || element.status == BookingDTOStatusEnum.RIFIUTATO).length,
               ),
           ],),
-          drawer: const Drawer(
+          drawer: Drawer(
             child: Column(
               children: [
-                ListTile(
+                const ListTile(
                   title: Text('20m2'),
                   subtitle: Text('xxx'),
                   leading: Icon(CupertinoIcons.home),
                 ),
                 ListTile(
-                  title: Text('I tuoi clienti'),
-                  subtitle: Text('xxx'),
-                  leading: Icon(CupertinoIcons.person_2),
+                  onTap: (){
+                    Navigator.pushNamed(context, CustomerScreen.routeName);
+                  },
+                  title: const Text('I tuoi clienti'),
+                  subtitle: const Text('xxx'),
+                  leading: const Icon(CupertinoIcons.person_2),
                 ),
-                ListTile(
+                const ListTile(
                   title: Text('Chat diretta'),
                   subtitle: Text('xxx'),
                   leading: Icon(CupertinoIcons.chat_bubble_2),
@@ -103,14 +107,13 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           appBar: AppBar(
+
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
-
                   Consumer<NotificationStateManager>(
                     builder: (BuildContext context, NotificationStateManager value, Widget? child) {
                       return IconButton(onPressed: () {
@@ -123,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
                                 .length.toString(), style: const TextStyle(color: Colors.white, fontSize: 11),),
                             position: badges.BadgePosition.topEnd(),
                             child: value.notifications.where((element) => element.read == '0')
-                                .isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : Icon(CupertinoIcons.bell)),
+                                .isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : const Icon(CupertinoIcons.bell)),
                       )
                       );
                     },
@@ -145,7 +148,7 @@ class _MainScreenState extends State<MainScreen> {
 
                   },
                   backgroundColor: Colors.green,
-                  child: Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30,),
+                  child: const Icon(FontAwesomeIcons.whatsapp, color: Colors.white, size: 30,),
                 ),
 
               ],

@@ -2,26 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:ventipro/state_manager/restaurant_state_manager.dart';
 
 import '../../../../api/restaurant_client/lib/api.dart';
+import '../../../../state_manager/restaurant_state_manager.dart';
 
-class CreateBooking extends StatefulWidget {
+class CreateBookingStatusConfirmed extends StatefulWidget {
+  const CreateBookingStatusConfirmed({super.key});
+
   @override
-  _CreateBookingState createState() => _CreateBookingState();
+  State<CreateBookingStatusConfirmed> createState() => _CreateBookingStatusConfirmedState();
 }
 
-class _CreateBookingState extends State<CreateBooking> {
+class _CreateBookingStatusConfirmedState extends State<CreateBookingStatusConfirmed> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _guests = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _minutesToWait = TextEditingController();
+  final TextEditingController _slotTime = TextEditingController();
   final TextEditingController _specialRequests = TextEditingController();
 
   final FocusNode _minutesFocusNode = FocusNode();
   int _waitingMinutes = 0;
+
+  DateTime _bookingDate = DateTime.now();
+
   void _showWaitingTimePicker(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
@@ -34,15 +39,15 @@ class _CreateBookingState extends State<CreateBooking> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text('Seleziona il tempo di attesa', style: TextStyle(fontSize: 10, color: Colors.blueGrey.shade900),),
+                  child: Text('Seleziona slot', style: TextStyle(fontSize: 10, color: Colors.blueGrey.shade900),),
                 ),
                 CupertinoTimerPicker(
                   mode: CupertinoTimerPickerMode.hm,
                   initialTimerDuration: Duration(minutes: _waitingMinutes),
-                  onTimerDurationChanged: (Duration newDuration) {
+                  onTimerDurationChanged: (Duration slotTimeDuration) {
                     setState(() {
-                      _minutesToWait.text = convertMinutesToHMMFormat(newDuration.inMinutes);
-                      _waitingMinutes = newDuration.inMinutes;
+                      _slotTime.text = convertMinutesToHMMFormat(slotTimeDuration.inMinutes);
+                      _waitingMinutes = slotTimeDuration.inMinutes;
                     });
                   },
                 ),
@@ -57,12 +62,7 @@ class _CreateBookingState extends State<CreateBooking> {
   String convertMinutesToHMMFormat(int minutes) {
     int hours = minutes ~/ 60; // Integer division to get the number of hours
     int remainingMinutes = minutes % 60; // Get the remainder for minutes
-
-    if(hours > 0){
-      return 'Attesa di ${hours} ore e ${remainingMinutes.toString().padLeft(2, '0')} minuti';
-    }else{
-      return 'Attesa di ${remainingMinutes.toString().padLeft(2, '0')} minuti';
-    }
+    return 'Arrivo alle ${hours}:${remainingMinutes.toString().padLeft(2, '0')}';
     // Return the formatted string as "h:mm"
 
   }
@@ -107,51 +107,51 @@ class _CreateBookingState extends State<CreateBooking> {
                   CupertinoTextField(
                     controller: _nameController,
                     placeholder: "Nome",
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
                     controller: _lastNameController,
                     placeholder: "Cognome",
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
                     controller: _guests,
                     placeholder: "Ospiti",
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
                     controller: _emailController,
                     placeholder: "Email",
                     keyboardType: TextInputType.emailAddress,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
                     controller: _phoneController,
-                    placeholder: "Phone Number",
+                    placeholder: "Cellulare",
                     keyboardType: TextInputType.phone,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
-                    controller: _minutesToWait,
+                    controller: _slotTime,
                     focusNode: _minutesFocusNode, // Attach the focus node here
-                    placeholder: "Tempo di attesa",
+                    placeholder: "Arrivo alle ore",
                     keyboardType: TextInputType.none, // Prevent the keyboard from opening
                     onTap: () {
                       _showWaitingTimePicker(context); // Show the time picker on tap
                     },
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoTextField(
                     controller: _specialRequests,
-                    placeholder: "Richieste particolari e info",
+                    placeholder: "Info",
                     keyboardType: TextInputType.text,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(8),
                   ),
                   const SizedBox(height: 16),
                   CupertinoButton.filled(
@@ -163,7 +163,7 @@ class _CreateBookingState extends State<CreateBooking> {
                           formCode: '',
                           branchCode: restaurantStateManager.currentEmployee!.branchCode!,
                           bookingCode: '',
-                          bookingDate: DateTime.now(),
+                          bookingDate: _bookingDate,
                           timeSlot: TimeSlot(
                             bookingHour: DateTime.now().hour,
                             bookingMinutes: DateTime.now().minute + 1,

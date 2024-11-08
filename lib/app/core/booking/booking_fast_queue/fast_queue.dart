@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import '../../../../global/style.dart';
 import '../../../../state_manager/restaurant_state_manager.dart';
-import '../crud_widget/create_booking.dart';
+import '../crud_widget/create_booking_lista_attesa.dart';
 import 'fast_queue_card.dart';
 
 class FastQueue extends StatefulWidget {
@@ -113,7 +113,7 @@ class _FastQueueState extends State<FastQueue> {
         backgroundColor: getStatusColor(bookingStatus).withOpacity(0.2),
         context: context,
         isScrollControlled: true, // Allows modal to adjust to keyboard
-        builder: (context) => CreateBooking()
+        builder: (context) => CreateBookingListAttesa()
     );
   }
 }

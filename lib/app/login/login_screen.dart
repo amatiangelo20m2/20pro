@@ -203,7 +203,6 @@ class _LoginPageState extends State<LoginPage> {
         }else{
           showCupertinoAlert(context, 'Error', 'Non sono riuscito a decodificare oggetto in entrata. Contatta supporto');
         }
-
       } else if (response.statusCode == 204) {
         showCupertinoAlert(context, 'Error', 'User not found');
       } else if (response.statusCode == 401) {

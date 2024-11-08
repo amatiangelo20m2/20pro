@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/global/style.dart';
 
@@ -47,6 +48,10 @@ class RestaurantStateManager extends ChangeNotifier {
 
   Future<void> setCurrentEmployee(EmployeeDTO employee, DateTime dateTime) async {
     _currentEmployee = employee;
+    final prefs = await SharedPreferences.getInstance();
+
+    // Save a String value
+    await prefs.setString('branchCode', _currentEmployee!.branchCode!);
     _restaurantConfiguration = await _restaurantControllerApi.retrieveConfiguration(_currentEmployee!.branchCode!);
     _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
     selectBookingForCurrentDay(dateTime);
@@ -88,8 +93,8 @@ class RestaurantStateManager extends ChangeNotifier {
   Future<void> fetchAllBookings() async {
     _allBookings = await _bookingControllerApi
         .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
-        format_yyyy_MM_dd.format(DateTime.now()),
-        format_yyyy_MM_dd.format(DateTime.now().add(const Duration(days: 30))));
+        format_yyyy_MM_dd.format(DateTime.now().subtract(Duration(days: 14))),
+        format_yyyy_MM_dd.format(DateTime.now().add(const Duration(days: 14))));
     notifyListeners();
   }
 

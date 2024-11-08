@@ -24,12 +24,12 @@ class _ProcessedBookingsState extends State<ProcessedBookings> {
   Widget build(BuildContext context) {
     return Consumer<RestaurantStateManager>(
       builder: (BuildContext context, RestaurantStateManager restaurantStateManager, Widget? child) {
+
         // Filter and group bookings by date
         final Map<DateTime, List<BookingDTO>> groupedBookings = _groupBookingsByDate(
           restaurantStateManager.allBookings!
               .where((booking) => booking.status == BookingDTOStatusEnum.ARRIVATO || booking.status == BookingDTOStatusEnum.ELIMINATO)
-              .toList(),
-        );
+              .toList());
 
         return RefreshIndicator(
           onRefresh: () async {

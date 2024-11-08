@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../api/restaurant_client/lib/api.dart';
-import '../app/core/booking/crud_widget/create_booking.dart';
+import '../app/core/booking/crud_widget/create_booking_lista_attesa.dart';
 
 var globalBlue = Color(0xFF38b6FF);
 
