@@ -308,7 +308,14 @@ class _CreateBookingListAttesaState extends State<CreateBookingListAttesa> {
                           createdAt: DateTime.now(),
                           timeWaitingFastQueueMinutes: _waitingMinutes, // Use the selected waiting minutes
                           bookingSource: BookingDTOBookingSourceEnum.WEB,
-                          comingWithDogs: false));
+                          comingWithDogs: false,
+                          timeSlotAfterUpdate: TimeSlot(
+                            bookingHour: 0,
+                            bookingMinutes: 0,
+                          ),
+                        numGuestsAfterUpdate: 0,
+                        bookingDateAfterUpdate: DateTime.now(),
+                      ));
 
                       if (bookingDTO != null) {
                         restaurantStateManager.refresh(DateTime.now());

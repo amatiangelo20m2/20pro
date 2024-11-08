@@ -55,6 +55,8 @@ Color getStatusColor(BookingDTOStatusEnum statusEnum) {
       return Colors.blueGrey;
     case BookingDTOStatusEnum.LISTA_ATTESA:
       return Colors.teal.shade300;
+    case BookingDTOStatusEnum.MODIFICATO_DA_UTENTE:
+      return Colors.purple;
     case BookingDTOStatusEnum.ELIMINATO:
       return CupertinoColors.black;
     default:
