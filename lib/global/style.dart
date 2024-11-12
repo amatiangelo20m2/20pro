@@ -46,7 +46,7 @@ Color getStatusColor(BookingDTOStatusEnum statusEnum) {
     case BookingDTOStatusEnum.CONFERMATO:
       return CupertinoColors.activeGreen;
     case BookingDTOStatusEnum.IN_ATTESA:
-      return CupertinoColors.systemYellow;
+      return Colors.deepOrangeAccent;
     case BookingDTOStatusEnum.RIFIUTATO:
       return CupertinoColors.destructiveRed;
     case BookingDTOStatusEnum.ARRIVATO:

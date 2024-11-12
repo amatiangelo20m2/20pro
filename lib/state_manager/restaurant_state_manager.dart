@@ -21,8 +21,9 @@ class RestaurantStateManager extends ChangeNotifier {
   EmployeeDTO? _currentEmployee;
 
   List<BookingDTO>? _currentBookings = [];
-  List<FormDTO>? _currentBranchForms = [];
   List<BookingDTO>? _allBookings = [];
+
+  List<FormDTO>? _currentBranchForms = [];
 
   // GETTER METHODS
   RestaurantDTO? get restaurantConfiguration => _restaurantConfiguration;
@@ -52,6 +53,7 @@ class RestaurantStateManager extends ChangeNotifier {
 
     // Save a String value
     await prefs.setString('branchCode', _currentEmployee!.branchCode!);
+
     _restaurantConfiguration = await _restaurantControllerApi.retrieveConfiguration(_currentEmployee!.branchCode!);
     _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
     selectBookingForCurrentDay(dateTime);
@@ -60,6 +62,7 @@ class RestaurantStateManager extends ChangeNotifier {
   }
 
   Future<void> refresh(DateTime currentDateTime) async {
+
     _restaurantConfiguration = await _restaurantControllerApi.retrieveConfiguration(_currentEmployee!.branchCode!);
     _currentBranchForms = await _formControllerApi.retrieveByBranchCode(_currentEmployee!.branchCode!);
     selectBookingForCurrentDay(currentDateTime);
@@ -72,20 +75,22 @@ class RestaurantStateManager extends ChangeNotifier {
   }
 
   updateBooking(BookingDTO bookingDTO) async {
-    await _bookingControllerApi.updateBooking(bookingDTO);
+    // Make the API call to update the booking
+
+    BookingDTO? bookingDTOUpdated = await _bookingControllerApi.updateBooking(bookingDTO);
     refresh(DateTime.now());
   }
 
 
   Future<void> selectBookingForCurrentDay(DateTime dateTime) async {
-    _currentBookings = await _bookingControllerApi
-        .retrieveBookingByBranchCodeAndDate(_currentEmployee!.branchCode!, format_yyyy_MM_dd.format(dateTime));
+    _currentBookings!.clear();
+    _currentBookings = _allBookings!.where((element) => isSameDay(element.bookingDate!, dateTime)).toList();
     notifyListeners();
   }
 
   retrieveTotalGuestsNumberForDayAndActiveBookings(DateTime day) {
     return (_allBookings!.where((element) =>
-        isSameDay(element.bookingDate!, day) && element.status == BookingDTOStatusEnum.CONFERMATO)
+    isSameDay(element.bookingDate!, day) && element.status == BookingDTOStatusEnum.CONFERMATO)
         .toList().fold(0, (total, booking) => total
         + (booking.numGuests ?? 0))).toString();
   }
@@ -94,36 +99,36 @@ class RestaurantStateManager extends ChangeNotifier {
     _allBookings = await _bookingControllerApi
         .retrieveBookingByStatusAndBranchCode(_currentEmployee!.branchCode!,
         format_yyyy_MM_dd.format(DateTime.now().subtract(Duration(days: 14))),
-        format_yyyy_MM_dd.format(DateTime.now().add(const Duration(days: 14))));
+        format_yyyy_MM_dd.format(DateTime.now().add(const Duration(days: 360))));
     notifyListeners();
   }
 
   Future<void> createBooking() async {
 
     BookingDTO? bookingDTO = await _bookingControllerApi.create(BookingDTO(
-      bookingId: 123,
-      formCode: '',
-      branchCode: currentEmployee!.branchCode!,
-      bookingCode: '',
-      bookingDate: DateTime.now(),
-      timeSlot: TimeSlot(
-        bookingHour: DateTime.now().hour,
-        bookingMinutes: DateTime.now().minute + 1,
-      ),
-      numGuests: 4,
-      status: BookingDTOStatusEnum.LISTA_ATTESA,
-      specialRequests: "Please prepare a high chair.",
-      customer: CustomerDTO(
-        firstName: 'Angelo',
-        lastName: 'Amati',
-        phone: '3454937047',
-        prefix: '39',
-        email: 'amati.angelo90@gmail.com'
-      ),
-      createdAt: DateTime.now(),
-      timeWaitingFastQueueMinutes: 1,
-      bookingSource: BookingDTOBookingSourceEnum.WEB,
-      comingWithDogs: false
+        bookingId: 123,
+        formCode: '',
+        branchCode: currentEmployee!.branchCode!,
+        bookingCode: '',
+        bookingDate: DateTime.now(),
+        timeSlot: TimeSlot(
+          bookingHour: DateTime.now().hour,
+          bookingMinutes: DateTime.now().minute + 1,
+        ),
+        numGuests: 4,
+        status: BookingDTOStatusEnum.LISTA_ATTESA,
+        specialRequests: "Please prepare a high chair.",
+        customer: CustomerDTO(
+            firstName: 'Angelo',
+            lastName: 'Amati',
+            phone: '3454937047',
+            prefix: '39',
+            email: 'amati.angelo90@gmail.com'
+        ),
+        createdAt: DateTime.now(),
+        timeWaitingFastQueueMinutes: 1,
+        bookingSource: BookingDTOBookingSourceEnum.WEB,
+        comingWithDogs: false
     ));
 
     refresh(DateTime.now());

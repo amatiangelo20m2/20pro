@@ -39,6 +39,7 @@ dependencies:
   persistent_bottom_nav_bar: ^6.2.1
   audioplayers: ^6.1.0
   awesome_bottom_bar: ^1.2.4
+  toggle_switch: ^2.3.0
 
   
 dev_dependencies:

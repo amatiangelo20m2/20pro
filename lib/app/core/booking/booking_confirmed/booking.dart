@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import 'package:ventipro/api/restaurant_client/lib/api.dart';
 import 'package:ventipro/app/core/booking/crud_widget/create_booking_confermato.dart';
 import 'package:ventipro/state_manager/restaurant_state_manager.dart';
@@ -29,10 +31,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   bool _searchField = false;
 
-  String? _selectedSegmentTimeRange = 'TUTTI';
-  bool switchValue = true;
-
   BookingDTOStatusEnum currentBookingStatus = BookingDTOStatusEnum.CONFERMATO;
+
+  int? index = 0;
 
   @override
   void initState() {
@@ -170,65 +171,101 @@ class _BookingScreenState extends State<BookingScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Vibration.vibrate(duration: 1000);
-                            _scrollToToday(restaurantManager);
-                          },
-                          child: Text(
-                            'Oggi',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: isTodaySelected
-                                    ? Colors.blueGrey.shade900
-                                    : Colors.grey),
-                          ),
+
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Vibration.vibrate(duration: 1000);
+                          _scrollToToday(restaurantManager);
+                        },
+                        child: Text(
+                          'Oggi',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isTodaySelected
+                                  ? Colors.blueGrey.shade900
+                                  : Colors.grey),
                         ),
-                        const SizedBox(width: 10),
-                        TextButton(
-                          onPressed: () {
-                            Vibration.vibrate(duration: 1000);
-                            _scrollToTomorrow(restaurantManager);
-                          },
-                          child: Text(
-                            'Domani',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: isTomorrowSelected
-                                    ? Colors.blueGrey.shade900
-                                    : Colors.grey),
-                          ),
+                      ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          Vibration.vibrate(duration: 1000);
+                          _scrollToTomorrow(restaurantManager);
+                        },
+                        child: Text(
+                          'Domani',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: isTomorrowSelected
+                                  ? Colors.blueGrey.shade900
+                                  : Colors.grey),
                         ),
-                        SizedBox(width: 20),
-                        IconButton(
-                            onPressed: () {
-                              _selectDate(
-                                  context, _selectedDate, restaurantManager);
-                              // _pickDateRange(context);
-                            },
-                            icon: Icon(CupertinoIcons.calendar,
-                                color: Colors.blueGrey)),
-                        IconButton(
-                            onPressed: () {
-                              _showSortMenu(context);
-                            },
-                            icon: const Icon(CupertinoIcons.sort_down,
-                                color: Colors.blueGrey)),
-                        IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _searchField = !_searchField;
-                              });
-                            },
-                            icon: const Icon(CupertinoIcons.search)),
-                      ],
-                    ),
-                  ],
+                      ),
+                      SizedBox(width: 20),
+                      IconButton(
+                          onPressed: () {
+                            _selectDate(
+                                context, _selectedDate, restaurantManager);
+                            // _pickDateRange(context);
+                          },
+                          icon: Icon(CupertinoIcons.calendar,
+                              color: Colors.blueGrey)),
+                      IconButton(
+                          onPressed: () {
+                            _showSortMenu(context);
+                          },
+                          icon: const Icon(CupertinoIcons.sort_down,
+                              color: Colors.blueGrey)),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _searchField = !_searchField;
+                            });
+                          },
+                          icon: const Icon(CupertinoIcons.search)),
+                      ToggleSwitch(
+                        minWidth: 90.0,
+                        cornerRadius: 20.0,
+                        activeBgColors: [[Colors.green], [Colors.red]],
+                        activeFgColor: Colors.white,
+                        inactiveBgColor: Colors.grey,
+                        inactiveFgColor: Colors.white,
+                        initialLabelIndex: index,
+                        totalSwitches: 2,
+                        labels: const ['Confermato', 'Rifiutato'],
+                        radiusStyle: true,
+                        onToggle: (indexnew) {
+
+                          setState(() {
+                            index = indexnew;
+                          });
+
+
+                          if (index == 0) {
+                            setState(() {
+                              currentBookingStatus =
+                                  BookingDTOStatusEnum.CONFERMATO;
+                            });
+                            Fluttertoast.showToast(
+                                msg:
+                                'Prenotazioni in stato ${currentBookingStatus}');
+                          } else {
+                            setState(() {
+                              currentBookingStatus =
+                                  BookingDTOStatusEnum.RIFIUTATO;
+                            });
+                            Fluttertoast.showToast(
+                                msg:
+                                'Prenotazioni in stato ${currentBookingStatus}');
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -290,6 +327,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                           : Colors.black),
                                 ),
                                 const SizedBox(height: 1),
+
                                 Text(
                                   '${day.day}.${day.month}',
                                   style: TextStyle(
@@ -322,74 +360,41 @@ class _BookingScreenState extends State<BookingScreen> {
                       Text(
                         '${italianDateFormat.format(_selectedDate)}'
                             .toUpperCase(),
-                        style: TextStyle(fontSize: 10),
+                        style: TextStyle(fontSize: 12),
                       ),
                       Row(
+
                         children: [
                           Text(restaurantManager
-                                  .retrieveTotalGuestsNumberForDayAndActiveBookings(
-                                      _selectedDate) +
+                              .retrieveTotalGuestsNumberForDayAndActiveBookings(
+                              _selectedDate) +
                               '/' +
                               restaurantManager
                                   .restaurantConfiguration!.capacity
-                                  .toString()),
-                          CupertinoSegmentedControl<String>(
-                            selectedColor: Colors.blueGrey.shade900,
-                            children: const {
-                              'PRANZO': Text(
-                                '🌞',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              'CENA': Text(
-                                '🌚',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              'TUTTI': Text(
-                                ' TUTTI ',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            },
-                            onValueChanged: (value) {
-                              setState(() {
-                                _selectedSegmentTimeRange = value;
-                              });
-                              Fluttertoast.showToast(
-                                  msg:
-                                      'Prenotazioni $_selectedSegmentTimeRange');
-                            },
-                            groupValue: _selectedSegmentTimeRange,
-                          ),
-                          Text(currentBookingStatus.value),
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: switchValue,
-                            activeColor: Colors.green,
-                            trackColor: Colors.red,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                switchValue = value ?? false;
-                                if (value!) {
-                                  setState(() {
-                                    currentBookingStatus =
-                                        BookingDTOStatusEnum.CONFERMATO;
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg:
-                                          'Prenotazioni in stato ${currentBookingStatus}');
-                                } else {
-                                  setState(() {
-                                    currentBookingStatus =
-                                        BookingDTOStatusEnum.RIFIUTATO;
-                                  });
-                                  Fluttertoast.showToast(
-                                      msg:
-                                          'Prenotazioni in stato ${currentBookingStatus}');
-                                }
-                              });
+                                  .toString() +  '  ', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+                          ToggleSwitch(
+                            minWidth: 40.0,
+                            minHeight: 25.0,
+                            initialLabelIndex: 0,
+                            cornerRadius: 20.0,
+                            activeFgColor: Colors.white,
+                            inactiveBgColor: Colors.grey,
+                            inactiveFgColor: Colors.white,
+                            totalSwitches: 2,
+                            icons: const [
+                              CupertinoIcons.sun_min_fill,
+                              Icons.nightlight_rounded,
+                            ],
+
+                            activeBgColors: [[Colors.yellow, Colors.orange], [Colors.blue.shade800, Colors.blueAccent.shade700]],
+                            animate: true,
+                            curve: Curves.decelerate,
+                            onToggle: (index) {
+                              print('switched to: $index');
                             },
                           ),
                         ],
-                      ),
+                      )
                     ],
                   ),
                 ),

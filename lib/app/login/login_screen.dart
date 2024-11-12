@@ -21,9 +21,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _branchCodeController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController(text: '111');
+  final TextEditingController _passwordController = TextEditingController(text: '111');
+  final TextEditingController _branchCodeController = TextEditingController(text: 'B0A62D6AD1');
 
   MobileDeviceDetails mdd = MobileDeviceDetails();
   bool _isLoading = false;
@@ -38,8 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Future<void> _checkIfUserAlreadyLoggedIn() async {
-    print('CCC');
-    var employeeDTO = await Provider.of<RestaurantStateManager>(context, listen: false).currentEmployee;
+    var employeeDTO = Provider.of<RestaurantStateManager>(context, listen: false).currentEmployee;
     if(employeeDTO != null){
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const MainScreen()),

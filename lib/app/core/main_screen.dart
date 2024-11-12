@@ -125,8 +125,7 @@ class _MainScreenState extends State<MainScreen> {
                             badgeContent: Text(value.notifications.where((element) => element.read == '0')
                                 .length.toString(), style: const TextStyle(color: Colors.white, fontSize: 11),),
                             position: badges.BadgePosition.topEnd(),
-                            child: value.notifications.where((element) => element.read == '0')
-                                .isNotEmpty ? Lottie.asset('assets/lotties/alarm.json') : const Icon(CupertinoIcons.bell)),
+                            child: const Icon(CupertinoIcons.bell)),
                       )
                       );
                     },

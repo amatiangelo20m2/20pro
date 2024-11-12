@@ -97,14 +97,20 @@ class ReservationCard extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
-              Expanded(flex: 3, child: _buildCustomerInfo()),
+              Expanded(flex: 2, child: _buildCustomerInfo()),
               Expanded(flex: 1, child: Text(getFormEmoji(formDTOs, booking))),
               Expanded(flex: 1, child: _buildGuestInfo()),
-              Expanded(flex: 2, child: _buildTimeBooking(context)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.doc_plaintext),)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green,),)),
-              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(CupertinoIcons.settings_solid, color: Colors.blueGrey,),)),
-              Expanded(flex: 2, child: _buildStatusButton(context)),
+              Expanded(flex: 1, child: IconButton(onPressed: () {
+                Provider.of<RestaurantStateManager>(context, listen: false)
+                    .updateBooking(BookingDTO(
+                    bookingCode: booking.bookingCode,
+                    bookingId: booking.bookingId,
+                    noShow: !booking.noShow!
+                ));
+              }, icon: Icon(booking.noShow!
+                  ? CupertinoIcons.eye_slash : CupertinoIcons.eye, color: !booking.noShow! ? CupertinoColors.activeBlue : Colors.blueGrey,),)),
+              Expanded(flex: 1, child: IconButton(onPressed: () {  }, icon: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green),)),
+               Expanded(flex: 2, child: _buildStatusButton(context)),
             ],
           ),
         ),
@@ -141,9 +147,8 @@ class ReservationCard extends StatelessWidget {
     );
   }
 
-  Row _buildTimeBooking(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+  _buildTimeBooking(BuildContext context) {
+    return Wrap(
       children: [
         const Icon(CupertinoIcons.clock, color: Colors.blueGrey,),
         Column(
@@ -152,6 +157,7 @@ class ReservationCard extends StatelessWidget {
               ' ${NumberFormat("00").format(booking.timeSlot?.bookingHour)}:${NumberFormat("00").format(booking.timeSlot?.bookingMinutes)}',
               style: TextStyle(
                 fontSize: 13,
+
                 color: Colors.blueGrey.shade900,
               ),
             ),
@@ -183,7 +189,7 @@ class ReservationCard extends StatelessWidget {
     return Row(
       children: [
         Icon(CupertinoIcons.person_2, color: Colors.blueGrey.shade900),
-        const SizedBox(width: 5),
+        const SizedBox(width: 2),
         Text(
           ' ${booking.numGuests ?? 0}',
           style: const TextStyle(

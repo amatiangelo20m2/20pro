@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -28,8 +27,8 @@ Future<void> main() async {
 }
 
 Future<void> _setupFirebaseMessaging() async {
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  final NotificationStateManager notificationStateManager = NotificationStateManager();
 
 
   // Request permission for notifications
@@ -59,11 +58,21 @@ Future<void> _setupFirebaseMessaging() async {
     print('Message data: ${message.toMap().toString()}');
 
     // Retrieve the current context using a navigator key
-    if (navigatorKey.currentContext != null) {
-      final notification = NotificationModel(title: message.notification!.title!,
-          body: message.notification!.body!, dateReceived: DateTime.now().toUtc().toIso8601String(), read: '0', navigationPage: 'XXX', );
 
-      await notificationStateManager.addNotification(notification);
+      final notification = NotificationModel(title: message.notification!.title!,
+          body: message.notification!.body!,
+        dateReceived: DateTime.now().toUtc().toIso8601String(),
+        read: '0',
+        navigationPage: 'XXX', );
+
+    try{
+      print('12');
+      BuildContext context = navigatorKey.currentContext!;
+      NotificationStateManager notificationProvider = Provider.of<NotificationStateManager>(context, listen: false);
+      print('Notification with open app: ${notification.toMap()}');
+      await notificationProvider.addNotification(notification);
+    }catch(e){
+      print('Exception' + e.toString());
     }
   });
 }
@@ -102,7 +111,7 @@ class _20PRO extends StatelessWidget {
           fontFamily: 'Helvetica',
 
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
